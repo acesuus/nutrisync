@@ -13,73 +13,24 @@
         {% csrf_token %}
         
         <div class="form-group">
-            <label for="food_name">Food Name</label>
+            <label for="food_name">Food and Portion</label>
             <input 
                 type="text" 
                 id="food_name" 
                 name="food_name" 
-                placeholder="e.g., Chicken Salad"
+                placeholder="e.g., 50g Chicken Salad"
                 required
             >
         </div>
 
         <div class="form-group">
-            <label for="description">Description (Optional)</label>
+            <label for="description">Notes (Optional)</label>
             <textarea 
                 id="description" 
                 name="description" 
                 rows="3"
-                placeholder="Add notes about your meal..."
+                placeholder="Add any additional notes..."
             ></textarea>
-        </div>
-
-        <div class="form-row">
-            <div class="form-group">
-                <label for="calories">Calories</label>
-                <input 
-                    type="number" 
-                    id="calories" 
-                    name="calories" 
-                    placeholder="0"
-                    min="0"
-                >
-            </div>
-
-            <div class="form-group">
-                <label for="protein">Protein (g)</label>
-                <input 
-                    type="number" 
-                    id="protein" 
-                    name="protein" 
-                    placeholder="0"
-                    min="0"
-                    step="0.1"
-                >
-            </div>
-
-            <div class="form-group">
-                <label for="carbs">Carbs (g)</label>
-                <input 
-                    type="number" 
-                    id="carbs" 
-                    name="carbs" 
-                    placeholder="0"
-                    min="0"
-                    step="0.1"
-                >
-            </div>
-
-            <div class="form-group">
-                <label for="fats">Fats (g)</label>
-                <input 
-                    type="number" 
-                    id="fats" 
-                    name="fats" 
-                    placeholder="0"
-                    min="0"
-                    step="0.1"
-                >
-            </div>
         </div>
 
         <div class="form-group">
@@ -119,12 +70,10 @@
                 <thead>
                     <tr>
                         <th>Time</th>
-                        <th>Food</th>
+                        <th>Food & Portion</th>
                         <th>Meal Type</th>
-                        <th>Calories</th>
-                        <th>Protein</th>
-                        <th>Carbs</th>
-                        <th>Fats</th>
+                        <th>Nutrition Facts</th>
+                        <th>Notes</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -132,17 +81,21 @@
                     {% for log in food_logs %}
                     <tr>
                         <td>{{ log.created_at|time:"h:i A" }}</td>
+                        <td><strong>{{ log.food_name }}</strong></td>
+                        <td>{{ log.meal_type|title }}</td>
+                        <td class="nutrition-facts">
+                            <div class="nutrition-breakdown">
+                                <span>Calories: {{ log.calories|default:"-" }}</span>
+                                <span>Protein: {{ log.protein|default:"-" }}g</span>
+                                <span>Carbs: {{ log.carbs|default:"-" }}g</span>
+                                <span>Fats: {{ log.fats|default:"-" }}g</span>
+                            </div>
+                        </td>
                         <td>
-                            <strong>{{ log.food_name }}</strong>
                             {% if log.description %}
-                            <br><small>{{ log.description|truncatewords:10 }}</small>
+                            <small>{{ log.description|truncatewords:10 }}</small>
                             {% endif %}
                         </td>
-                        <td>{{ log.meal_type|title }}</td>
-                        <td>{{ log.calories|default:"-" }}</td>
-                        <td>{{ log.protein|default:"-" }}g</td>
-                        <td>{{ log.carbs|default:"-" }}g</td>
-                        <td>{{ log.fats|default:"-" }}g</td>
                         <td>
                             <a href="{% url 'edit_food_log' log.id %}" class="btn-edit">Edit</a>
                             <a href="{% url 'delete_food_log' log.id %}" class="btn-delete">Delete</a>
