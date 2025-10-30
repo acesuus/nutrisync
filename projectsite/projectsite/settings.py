@@ -5,13 +5,16 @@ UPDATED with recommended configurations for food tracker
 
 from pathlib import Path
 import os
-from decouple import config
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = config('SECRET_KEY')
-DEBUG = config('DEBUG', default=False, cast=bool)
-CALORIENINJAS_API_KEY = config('CALORIENINJAS_API_KEY')
+SECRET_KEY = os.getenv('SECRET_KEY')
+DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
+CALORIENINJAS_API_KEY = os.getenv('CALORIENINJAS_API_KEY')
 
 
 
