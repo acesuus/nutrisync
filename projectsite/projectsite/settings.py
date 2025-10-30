@@ -5,6 +5,11 @@ UPDATED with recommended configurations for food tracker
 
 from pathlib import Path
 import os
+from decouple import config
+
+SECRET_KEY = config('SECRET_KEY')
+DEBUG = config('DEBUG', default=False, cast=bool)
+CALORIENINJAS_API_KEY = config('CALORIENINJAS_API_KEY')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
