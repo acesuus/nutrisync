@@ -8,7 +8,7 @@ class FoodLogForm(forms.ModelForm):
         widget=forms.Textarea(attrs={
             'class': 'form-control',
             'placeholder': 'E.g., "Last night we ordered a 14oz prime rib and mashed potatoes"',
-            'rows': 2,
+            'rows': 3,
         }),
         label='Describe what you ate (AI-powered)',
         help_text='Describe your meal naturally and we\'ll extract the details automatically'
@@ -16,13 +16,9 @@ class FoodLogForm(forms.ModelForm):
     
     class Meta:
         model = FoodLog
-        fields = ['food_name', 'meal_type', 'date', 'description', 'calories']
+        fields = ['meal_type', 'date']
         
         widgets = {
-            'food_name': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'e.g., Chicken Salad',
-            }),
             'meal_type': forms.Select(attrs={
                 'class': 'form-control',
             }),
@@ -30,24 +26,11 @@ class FoodLogForm(forms.ModelForm):
                 'class': 'form-control',
                 'type': 'date',
             }),
-            'description': forms.Textarea(attrs={
-                'class': 'form-control',
-                'placeholder': 'Optional notes about this meal...',
-                'rows': 3,
-            }),
-            'calories': forms.NumberInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Auto-filled from API',
-                'readonly': 'readonly',
-            }),
         }
         
         labels = {
-            'food_name': 'Food Name',
             'meal_type': 'Meal Type',
             'date': 'Date',
-            'description': 'Nutrition Details',
-            'calories': 'Total Calories',
         }
     
     def clean_date(self):

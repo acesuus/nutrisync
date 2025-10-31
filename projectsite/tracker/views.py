@@ -9,11 +9,10 @@ from .services import CalorieNinjasService
 import json
 
 
-
 def home(request):
-    """    Home page showing:   
+    """Home page showing:   
      - Form to add new food log    
-     - Today's food logs    """   
+     - Today's food logs"""   
     today = timezone.now().date()
     # Get today's food logs    
     todays_logs = FoodLog.objects.filter(date=today)
@@ -34,19 +33,21 @@ def home(request):
         'meal_counts': meal_counts,
     }
     return render(request, 'tracker/home.html', context)
-    
-    
-def add_food_log_with_api(request):
-    """
-    Handle food log creation with optional API parsing
-    """
+
+
+def add_food_log(request):
+    """Handle POST request to save new food log with AI parsing"""    
     if request.method == 'POST':
         form = FoodLogForm(request.POST)
         
-        # Check if natural query was provided
+        # Get natural query from form
         natural_query = request.POST.get('natural_query', '').strip()
         
-        if natural_query:
+        if not natural_query:
+            messages.error(request, '❌ Please describe what you ate.')
+            return redirect('tracker:home')
+        
+        if form.is_valid():
             # Use API to parse natural language
             api_service = CalorieNinjasService()
             api_response = api_service.parse_food_query(natural_query)
@@ -58,71 +59,53 @@ def add_food_log_with_api(request):
                     api_response
                 )
                 
-                # Pre-fill form with API data
-                form.data = form.data.copy()  # Make mutable
-                form.data['food_name'] = formatted_data['food_name']
-                form.data['description'] = formatted_data['description']
-                form.data['calories'] = formatted_data['calories']
+                # Create food log with API data
+                food_log = form.save(commit=False)
+                food_log.food_name = formatted_data['food_name']
+                food_log.description = formatted_data['description']
+                food_log.calories = formatted_data['calories']
+                food_log.save()
                 
                 messages.success(
                     request,
-                    f"✨ AI parsed your meal! Found: {formatted_data['food_name']}"
+                    f"✨ AI parsed your meal! {food_log.food_name} logged successfully!"
                 )
+                return redirect('tracker:home')
             else:
-                messages.warning(
+                messages.error(
                     request,
-                    f"⚠️ Could not parse with AI: {api_response.get('message')}. "
-                    "Please fill manually."
+                    f"⚠️ Could not parse with AI: {api_response.get('message', 'Unknown error')}"
                 )
-        
-        if form.is_valid():
-            food_log = form.save()
-            messages.success(
-                request,
-                f'✅ {food_log.food_name} logged successfully!'
-            )
-            return redirect('tracker:home')
-        else:
-            messages.error(request, '❌ Please correct the errors below.')
-    
-    # GET request or form errors
-    return redirect('tracker:home')
-
-def add_food_log(request):
-    """    Handle POST request to save new food log.    
-    Redirects back to home page with success/error message.    """    
-    if request.method == 'POST':
-        form = FoodLogForm(request.POST)
-        if form.is_valid():
-            # Save the form            
-            food_log = form.save()
-            # Show success message            
-            messages.success(
-                request,
-                f'✅ {food_log.food_name} logged successfully for {food_log.get_meal_type_display()}!'            )
-            return redirect('tracker:home')
+                return redirect('tracker:home')
         else:
             # Show error message           
-            messages.error(
-                request,
-                '❌ Please correct the errors below.')
+            messages.error(request, '❌ Please correct the errors below.')
             # Re-display the form with errors            
             today = timezone.now().date()
             todays_logs = FoodLog.objects.filter(date=today)
+            meal_counts = {
+                'breakfast': todays_logs.filter(meal_type='breakfast').count(),
+                'lunch': todays_logs.filter(meal_type='lunch').count(),
+                'dinner': todays_logs.filter(meal_type='dinner').count(),
+                'snack': todays_logs.filter(meal_type='snack').count(),
+            }
             context = {
                 'form': form,
                 'todays_logs': todays_logs,
                 'today': today,
                 'total_logs_today': todays_logs.count(),
+                'meal_counts': meal_counts,
             }
             return render(request, 'tracker/home.html', context)
+    
     # If not POST, redirect to home    
     return redirect('tracker:home')
 
+
 def edit_food_log(request, pk):
-    """    Edit an existing food log.    
+    """Edit an existing food log.    
     GET: Display pre-filled form    
-    POST: Update the food log    """    
+    POST: Update the food log"""    
     # Get the food log or return 404 if not found    
     food_log = get_object_or_404(FoodLog, pk=pk)
     if request.method == 'POST':
@@ -132,7 +115,8 @@ def edit_food_log(request, pk):
             updated_log = form.save()
             messages.success(
                 request,
-                f'✅ {updated_log.food_name} updated successfully!'            )
+                f'✅ {updated_log.food_name} updated successfully!'
+            )
             return redirect('tracker:home')
         else:
             messages.error(request, '❌ Please correct the errors below.')
@@ -146,22 +130,25 @@ def edit_food_log(request, pk):
     }
     return render(request, 'tracker/edit_food_log.html', context)
 
+
 def delete_food_log(request, pk):
-    """    Delete a food log with confirmation.    
+    """Delete a food log with confirmation.    
     GET: Show confirmation page    
-    POST: Delete the food log    """    
+    POST: Delete the food log"""    
     food_log = get_object_or_404(FoodLog, pk=pk)
     if request.method == 'POST':
         food_name = food_log.food_name
         food_log.delete()
         messages.success(
             request,
-            f'🗑️ {food_name} has been deleted.'        )
+            f'🗑️ {food_name} has been deleted.'
+        )
         return redirect('tracker:home')
     context = {
         'food_log': food_log,
     }
     return render(request, 'tracker/delete_confirm.html', context)
+
 
 def dashboard(request):
     """

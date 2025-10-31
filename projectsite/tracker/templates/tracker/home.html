@@ -20,31 +20,15 @@
 
                     <!-- AI-Powered Natural Language Input -->
                     <div class="mb-4">
-                        <div class="card bg-light">
-                            <div class="card-body">
-                                <h6 class="card-title">
-                                    <span class="badge bg-success">NEW</span>
-                                    🤖 AI-Powered Input
-                                </h6>
-                                {{ form.natural_query }}
-                                <small class="text-muted">
-                                    Try: "I had 2 eggs, bacon, and toast for breakfast" or 
-                                    "Last night we ordered a 14oz prime rib and mashed potatoes"
-                                </small>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="text-center mb-3">
-                        <strong>OR</strong>
-                    </div>
-
-                    <!-- Manual Input Fields -->
-                    <div class="mb-3">
-                        <label for="{{ form.food_name.id_for_label }}" class="form-label">
-                            {{ form.food_name.label }}
+                        <label for="{{ form.natural_query.id_for_label }}" class="form-label">
+                            <span class="badge bg-success">AI-Powered</span>
+                            {{ form.natural_query.label }}
                         </label>
-                        {{ form.food_name }}
+                        {{ form.natural_query }}
+                        <small class="text-muted">
+                            Try: "I had 2 eggs, bacon, and toast for breakfast" or 
+                            "Last night we ordered a 14oz prime rib and mashed potatoes"
+                        </small>
                     </div>
 
                     <div class="mb-3">
@@ -59,21 +43,6 @@
                             {{ form.date.label }}
                         </label>
                         {{ form.date }}
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="{{ form.description.id_for_label }}" class="form-label">
-                            {{ form.description.label }}
-                        </label>
-                        {{ form.description }}
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="{{ form.calories.id_for_label }}" class="form-label">
-                            {{ form.calories.label }}
-                        </label>
-                        {{ form.calories }}
-                        <small class="text-muted d-block">Auto-calculated from AI</small>
                     </div>
 
                     <button type="submit" class="btn btn-primary w-100">
@@ -137,26 +106,32 @@
                                 <tr>
                                     <th>Food</th>
                                     <th>Meal Type</th>
-                                    <th>Notes</th>
+                                    <th>Calories</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for log in todays_logs %}
                                     <tr>
-                                        <td><strong>{{ log.food_name }}</strong></td>
+                                        <td>
+                                            <strong>{{ log.food_name }}</strong>
+                                            {% if log.description %}
+                                                <br>
+                                                <small class="text-muted">
+                                                    {{ log.description|truncatewords:15 }}
+                                                </small>
+                                            {% endif %}
+                                        </td>
                                         <td>
                                             <span class="badge bg-{{ log.meal_type|meal_badge_color }}">
                                                 {{ log.get_meal_type_display }}
                                             </span>
                                         </td>
                                         <td>
-                                            {% if log.description %}
-                                                <small class="text-muted">
-                                                    {{ log.description|truncatewords:10 }}
-                                                </small>
+                                            {% if log.calories %}
+                                                <strong>{{ log.calories|floatformat:0 }}</strong> cal
                                             {% else %}
-                                                <small class="text-muted">No notes</small>
+                                                <small class="text-muted">-</small>
                                             {% endif %}
                                         </td>
                                         <td>
