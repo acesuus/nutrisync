@@ -118,3 +118,30 @@ def add_food_log(request):
             return render(request, 'tracker/home.html', context)
     # If not POST, redirect to home    
     return redirect('tracker:home')
+
+def edit_food_log(request, pk):
+    """    Edit an existing food log.    
+    GET: Display pre-filled form    
+    POST: Update the food log    """    
+    # Get the food log or return 404 if not found    
+    food_log = get_object_or_404(FoodLog, pk=pk)
+    if request.method == 'POST':
+        # Bind form with POST data and existing instance        
+        form = FoodLogForm(request.POST, instance=food_log)
+        if form.is_valid():
+            updated_log = form.save()
+            messages.success(
+                request,
+                f'✅ {updated_log.food_name} updated successfully!'            )
+            return redirect('tracker:home')
+        else:
+            messages.error(request, '❌ Please correct the errors below.')
+    else:
+        # Display pre-filled form        
+        form = FoodLogForm(instance=food_log)
+    context = {
+        'form': form,
+        'food_log': food_log,
+        'is_editing': True,
+    }
+    return render(request, 'tracker/edit_food_log.html', context)
