@@ -6,6 +6,7 @@ from datetime import date, timedelta
 from .models import FoodLog
 from .forms import FoodLogForm
 from .services import CalorieNinjasService
+from .utils import calculate_statistics, prepare_chart_data
 import json
 
 
@@ -161,7 +162,12 @@ def dashboard(request):
     end_date = request.GET.get('end_date')
     meal_filter = request.GET.get('meal_type', '')
 
+    # Filter food logs (you can customize filters here)
     food_logs = FoodLog.objects.all()
+
+    # Use utility functions to compute stats and chart data
+    stats = calculate_statistics(food_logs)
+    chart_data = prepare_chart_data(food_logs)
 
     if start_date:
         food_logs = food_logs.filter(date__gte=start_date)
@@ -203,6 +209,8 @@ def dashboard(request):
     meal_distribution_json = json.dumps(meal_distribution)
 
     context = {
+        **stats,
+        **chart_data,
         'food_logs': food_logs,
         'total_logs': total_logs,
         'meal_type_counts': meal_type_counts,
