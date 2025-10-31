@@ -162,3 +162,73 @@ def delete_food_log(request, pk):
         'food_log': food_log,
     }
     return render(request, 'tracker/delete_confirm.html', context)
+
+def dashboard(request):
+    """
+    Dashboard showing all food logs with:
+    - Date range filtering
+    - Statistics
+    - Charts data
+    """
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
+    meal_filter = request.GET.get('meal_type', '')
+
+    food_logs = FoodLog.objects.all()
+
+    if start_date:
+        food_logs = food_logs.filter(date__gte=start_date)
+    if end_date:
+        food_logs = food_logs.filter(date__lte=end_date)
+    if meal_filter:
+        food_logs = food_logs.filter(meal_type=meal_filter)
+
+    total_logs = food_logs.count()
+
+    meal_type_counts = food_logs.values('meal_type').annotate(
+        count=Count('id')
+    ).order_by('-count')
+
+    if food_logs.exists():
+        date_range_start = food_logs.order_by('date').first().date
+        date_range_end = food_logs.order_by('-date').first().date
+        total_days = (date_range_end - date_range_start).days + 1
+        avg_logs_per_day = total_logs / total_days if total_days > 0 else 0
+    else:
+        date_range_start = None
+        date_range_end = None
+        avg_logs_per_day = 0
+
+    most_frequent_meal = meal_type_counts.first() if meal_type_counts else None
+
+    today = timezone.now().date()
+    last_7_days = [today - timedelta(days=i) for i in range(6, -1, -1)]
+    daily_counts = [
+        {
+            'date': day.strftime('%m/%d'),
+            'count': FoodLog.objects.filter(date=day).count()
+        }
+        for day in last_7_days
+    ]
+
+    meal_distribution = list(meal_type_counts)
+    daily_counts_json = json.dumps(daily_counts)
+    meal_distribution_json = json.dumps(meal_distribution)
+
+    context = {
+        'food_logs': food_logs,
+        'total_logs': total_logs,
+        'meal_type_counts': meal_type_counts,
+        'most_frequent_meal': most_frequent_meal,
+        'avg_logs_per_day': round(avg_logs_per_day, 1),
+        'date_range_start': date_range_start,
+        'date_range_end': date_range_end,
+        'daily_counts': daily_counts,
+        'meal_distribution': meal_distribution,
+        'start_date': start_date,
+        'end_date': end_date,
+        'meal_filter': meal_filter,
+        'daily_counts_json': daily_counts_json,
+        'meal_distribution_json': meal_distribution_json,
+    }
+    return render(request, 'tracker/dashboard.html', context)
