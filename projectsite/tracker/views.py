@@ -145,3 +145,20 @@ def edit_food_log(request, pk):
         'is_editing': True,
     }
     return render(request, 'tracker/edit_food_log.html', context)
+
+def delete_food_log(request, pk):
+    """    Delete a food log with confirmation.    
+    GET: Show confirmation page    
+    POST: Delete the food log    """    
+    food_log = get_object_or_404(FoodLog, pk=pk)
+    if request.method == 'POST':
+        food_name = food_log.food_name
+        food_log.delete()
+        messages.success(
+            request,
+            f'🗑️ {food_name} has been deleted.'        )
+        return redirect('tracker:home')
+    context = {
+        'food_log': food_log,
+    }
+    return render(request, 'tracker/delete_confirm.html', context)
