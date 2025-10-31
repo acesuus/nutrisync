@@ -1,0 +1,255 @@
+{% extends 'tracker/base.html' %}
+{% load static %}
+
+{% block title %}Dashboard - NutriSync{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">📊 Dashboard</h2>
+
+<!-- Filter Section -->
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-3">
+                <label for="start_date" class="form-label">Start Date</label>
+                <input type="date" class="form-control" id="start_date" name="start_date" value="{{ start_date }}">
+            </div>
+
+            <div class="col-md-3">
+                <label for="end_date" class="form-label">End Date</label>
+                <input type="date" class="form-control" id="end_date" name="end_date" value="{{ end_date }}">
+            </div>
+
+            <div class="col-md-3">
+                <label for="meal_type" class="form-label">Meal Type</label>
+                <select class="form-control" id="meal_type" name="meal_type">
+                    <option value="">All Meals</option>
+                    <option value="breakfast" {% if meal_filter == 'breakfast' %}selected{% endif %}>Breakfast</option>
+                    <option value="lunch" {% if meal_filter == 'lunch' %}selected{% endif %}>Lunch</option>
+                    <option value="dinner" {% if meal_filter == 'dinner' %}selected{% endif %}>Dinner</option>
+                    <option value="snack" {% if meal_filter == 'snack' %}selected{% endif %}>Snack</option>
+                </select>
+            </div>
+
+            <div class="col-md-3 d-flex align-items-end gap-2">
+                <button type="submit" class="btn btn-primary flex-fill">🔍 Filter</button>
+                <a href="{% url 'tracker:dashboard' %}" class="btn btn-secondary">Clear</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+
+    <div class="col-md-3">
+        <div class="card stat-card bg-primary text-white shadow-sm">
+            <div class="card-body text-center">
+                <h3 class="display-4">{{ total_logs }}</h3>
+                <p class="mb-0">Total Meals Logged</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card stat-card bg-success text-white shadow-sm">
+            <div class="card-body text-center">
+                <h3 class="display-4">{{ avg_logs_per_day }}</h3>
+                <p class="mb-0">Avg Meals Per Day</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card stat-card bg-info text-white shadow-sm">
+            <div class="card-body text-center">
+                <h3 class="display-4">
+                    {% if most_frequent_meal %}
+                        {{ most_frequent_meal.count }}
+                    {% else %}
+                        0
+                    {% endif %}
+                </h3>
+                <p class="mb-0">
+                    {% if most_frequent_meal %}
+                        {{ most_frequent_meal.meal_type|title }}s
+                    {% else %}
+                        No Data
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card stat-card bg-warning text-white shadow-sm">
+            <div class="card-body text-center">
+                <h3 class="display-4">
+                    {% if date_range_start and date_range_end %}
+                        {{ date_range_end|timesince:date_range_start|truncatewords:1 }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </h3>
+                <p class="mb-0">Tracking Period</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Total Calories Card -->
+    <div class="col-md-3">
+        <div class="card stat-card bg-danger text-white shadow-sm">
+            <div class="card-body text-center">
+                <h3 class="display-4">
+                    {% if food_logs %}
+                        {{ food_logs|total_calories }}
+                    {% else %}
+                        0
+                    {% endif %}
+                </h3>
+                <p class="mb-0">Total Calories</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Charts Section -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h5 class="mb-0">📈 Meals Logged (Last 7 Days)</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="dailyLogsChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h5 class="mb-0">🥧 Meal Type Distribution</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="mealTypeChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- All Logs Table -->
+<div class="card shadow-sm">
+    <div class="card-header">
+        <h5 class="mb-0">📋 All Food Logs</h5>
+    </div>
+    <div class="card-body">
+        {% if food_logs %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Food Name</th>
+                            <th>Meal Type</th>
+                            <th>Notes</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in food_logs %}
+                            <tr>
+                                <td>{{ log.date }}</td>
+                                <td><strong>{{ log.food_name }}</strong></td>
+                                <td>
+                                    <span class="badge bg-secondary">{{ log.get_meal_type_display }}</span>
+                                </td>
+                                <td>
+                                    {% if log.description %}
+                                        <small class="text-muted">{{ log.description|truncatewords:15 }}</small>
+                                    {% else %}
+                                        <small class="text-muted">-</small>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{% url 'tracker:edit_food_log' log.pk %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                                    <a href="{% url 'tracker:delete_food_log' log.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="text-center py-5">
+                <p class="text-muted">No food logs found.</p>
+                <a href="{% url 'tracker:home' %}" class="btn btn-primary">Add Your First Meal</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+    // Daily Logs Chart
+    const dailyLogsCtx = document.getElementById('dailyLogsChart');
+    if (dailyLogsCtx) {
+        const dailyData = {{ daily_counts_json|safe }};
+        new Chart(dailyLogsCtx, {
+            type: 'line',
+            data: {
+                labels: dailyData.map(d => d.date),
+                datasets: [{
+                    label: 'Meals Logged',
+                    data: dailyData.map(d => d.count),
+                    borderColor: 'rgb(75, 192, 192)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    tension: 0.1,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { stepSize: 1 }
+                    }
+                }
+            }
+        });
+    }
+
+    // Meal Type Chart
+    const mealTypeCtx = document.getElementById('mealTypeChart');
+    if (mealTypeCtx) {
+        const mealData = {{ meal_distribution_json|safe }};
+        new Chart(mealTypeCtx, {
+            type: 'doughnut',
+            data: {
+                labels: mealData.map(d => d.meal_type.charAt(0).toUpperCase() + d.meal_type.slice(1)),
+                datasets: [{
+                    data: mealData.map(d => d.count),
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.8)',
+                        'rgba(54, 162, 235, 0.8)',
+                        'rgba(255, 206, 86, 0.8)',
+                        'rgba(75, 192, 192, 0.8)'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+    }
+</script>
+{% endblock %}
