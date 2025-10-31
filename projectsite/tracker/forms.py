@@ -10,7 +10,7 @@ class FoodLogForm(forms.ModelForm):
             'placeholder': 'E.g., "Last night we ordered a 14oz prime rib and mashed potatoes"',
             'rows': 3,
         }),
-        label='Describe what you ate (AI-powered)',
+        label='Describe what you ate: ',
         help_text='Describe your meal naturally and we\'ll extract the details automatically'
     )
     
