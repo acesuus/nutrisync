@@ -88,3 +88,33 @@ def add_food_log_with_api(request):
     # GET request or form errors
     return redirect('tracker:home')
 
+def add_food_log(request):
+    """    Handle POST request to save new food log.    
+    Redirects back to home page with success/error message.    """    
+    if request.method == 'POST':
+        form = FoodLogForm(request.POST)
+        if form.is_valid():
+            # Save the form            
+            food_log = form.save()
+            # Show success message            
+            messages.success(
+                request,
+                f'✅ {food_log.food_name} logged successfully for {food_log.get_meal_type_display()}!'            )
+            return redirect('tracker:home')
+        else:
+            # Show error message           
+            messages.error(
+                request,
+                '❌ Please correct the errors below.')
+            # Re-display the form with errors            
+            today = timezone.now().date()
+            todays_logs = FoodLog.objects.filter(date=today)
+            context = {
+                'form': form,
+                'todays_logs': todays_logs,
+                'today': today,
+                'total_logs_today': todays_logs.count(),
+            }
+            return render(request, 'tracker/home.html', context)
+    # If not POST, redirect to home    
+    return redirect('tracker:home')
