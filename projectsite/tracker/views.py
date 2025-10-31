@@ -60,22 +60,23 @@ def add_food_log(request):
                     api_response
                 )
                 
-                # Create food log with API data
+                # Create food log with API data including nutrition
                 food_log = form.save(commit=False)
                 food_log.food_name = formatted_data['food_name']
                 food_log.description = formatted_data['description']
                 food_log.calories = formatted_data['calories']
+                food_log.nutrition_data = formatted_data.get('nutrition', {})
                 food_log.save()
                 
                 messages.success(
                     request,
-                    f"✨ AI parsed your meal! {food_log.food_name} logged successfully!"
+                    f"{food_log.food_name} logged successfully!"
                 )
                 return redirect('tracker:home')
             else:
                 messages.error(
                     request,
-                    f"⚠️ Could not parse with AI: {api_response.get('message', 'Unknown error')}"
+                    f"{api_response.get('message', 'Unknown error')}"
                 )
                 return redirect('tracker:home')
         else:

@@ -4,6 +4,74 @@
 
 {% block title %}Home - NutriSync{% endblock %}
 
+{% block extra_css %}
+<style>
+    .nutrition-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 15px;
+        padding: 10px;
+        color: white;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    
+    .nutrition-item {
+        margin-bottom: 15px;
+    }
+    
+    .nutrition-label {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 5px;
+        font-size: 0.95rem;
+    }
+    
+    .nutrition-name {
+        font-weight: 500;
+    }
+    
+    .nutrition-values {
+        font-size: 0.85rem;
+        opacity: 0.9;
+    }
+    
+    .nutrition-percentage {
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+    
+    .progress {
+        height: 8px;
+        border-radius: 10px;
+        background-color: rgba(255, 255, 255, 0.2);
+        overflow: hidden;
+    }
+    
+    .progress-bar {
+        border-radius: 10px;
+        transition: width 0.6s ease;
+    }
+    
+    .stat-box {
+        padding: 10px;
+        text-align: center;
+        background: #f8f9fa;
+        border-radius: 8px;
+    }
+    
+    .stat-number {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #667eea;
+    }
+    
+    .stat-label {
+        font-size: 0.85rem;
+        color: #6c757d;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="row">
 
@@ -24,7 +92,6 @@
                             {{ form.natural_query.label }}
                         </label>
                         {{ form.natural_query }}
-
                     </div>
 
                     <div class="mb-3">
@@ -46,41 +113,39 @@
                     </button>
                 </form>
             </div>
+        </div>
 
-            <!-- Quick Stats -->
-            <div class="card shadow-sm mt-3">
-                <div class="card-body">
-                    <h6 class="card-title">Today's Summary</h6>
-                    <div class="row text-center">
-
-                        <div class="col-6 mb-2">
-                            <div class="stat-box">
-                                <div class="stat-number">{{ total_logs_today }}</div>
-                                <div class="stat-label">Total Logs</div>
-                            </div>
+        <!-- Quick Stats -->
+        <div class="card shadow-sm mt-3">
+            <div class="card-body">
+                <h6 class="card-title">Today's Summary</h6>
+                <div class="row text-center">
+                    <div class="col-6 mb-2">
+                        <div class="stat-box">
+                            <div class="stat-number">{{ total_logs_today }}</div>
+                            <div class="stat-label">Total Logs</div>
                         </div>
+                    </div>
 
-                        <div class="col-6 mb-2">
-                            <div class="stat-box">
-                                <div class="stat-number">{{ meal_counts.breakfast }}</div>
-                                <div class="stat-label">Breakfast</div>
-                            </div>
+                    <div class="col-6 mb-2">
+                        <div class="stat-box">
+                            <div class="stat-number">{{ meal_counts.breakfast }}</div>
+                            <div class="stat-label">Breakfast</div>
                         </div>
+                    </div>
 
-                        <div class="col-6">
-                            <div class="stat-box">
-                                <div class="stat-number">{{ meal_counts.lunch }}</div>
-                                <div class="stat-label">Lunch</div>
-                            </div>
+                    <div class="col-6">
+                        <div class="stat-box">
+                            <div class="stat-number">{{ meal_counts.lunch }}</div>
+                            <div class="stat-label">Lunch</div>
                         </div>
+                    </div>
 
-                        <div class="col-6">
-                            <div class="stat-box">
-                                <div class="stat-number">{{ meal_counts.dinner }}</div>
-                                <div class="stat-label">Dinner</div>
-                            </div>
+                    <div class="col-6">
+                        <div class="stat-box">
+                            <div class="stat-number">{{ meal_counts.dinner }}</div>
+                            <div class="stat-label">Dinner</div>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -96,55 +161,177 @@
 
             <div class="card-body">
                 {% if todays_logs %}
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Food</th>
-                                    <th>Meal Type</th>
-                                    <th>Calories</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for log in todays_logs %}
-                                    <tr>
-                                        <td>
-                                            <strong>{{ log.food_name }}</strong>
-                                            {% if log.description %}
-                                                <br>
-                                                <small class="text-muted">
-                                                    {{ log.description|truncatewords:15 }}
-                                                </small>
-                                            {% endif %}
-                                        </td>
-                                        <td>
-                                            <span class="badge bg-{{ log.meal_type|meal_badge_color }}">
-                                                {{ log.get_meal_type_display }}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            {% if log.calories %}
-                                                <strong>{{ log.calories|floatformat:0 }}</strong> cal
-                                            {% else %}
-                                                <small class="text-muted">-</small>
-                                            {% endif %}
-                                        </td>
-                                        <td>
+                    {% for log in todays_logs %}
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <h5 class="card-title">{{ log.food_name }}</h5>
+                                        <span class="badge bg-{{ log.meal_type|meal_badge_color }} mb-2">
+                                            {{ log.get_meal_type_display }}
+                                        </span>
+                                        
+                                        {% if log.calories %}
+                                            <p class="mb-2">
+                                                <strong>{{ log.calories|floatformat:0 }}</strong> calories
+                                            </p>
+                                        {% endif %}
+
+                                        <div class="btn-group btn-group-sm">
                                             <a href="{% url 'tracker:edit_food_log' log.pk %}" 
-                                               class="btn btn-sm btn-outline-primary">
+                                               class="btn btn-outline-primary">
                                                 ✏️ Edit
                                             </a>
                                             <a href="{% url 'tracker:delete_food_log' log.pk %}" 
-                                               class="btn btn-sm btn-outline-danger">
+                                               class="btn btn-outline-danger">
                                                 🗑️ Delete
                                             </a>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        {% if log.nutrition_data %}
+                                            <div class="nutrition-card">
+                                                <h6 class="mb-3" style="font-size: 0.9rem;">Nutrition Facts</h6>
+                                                
+                                                <!-- Protein -->
+                                                {% with log.nutrition_data.protein_g as protein %}
+                                                    {% if protein %}
+                                                        {% get_nutrition_target 'protein_g' as protein_target %}
+                                                        {% with protein|nutrition_percentage:protein_target as protein_pct %}
+                                                        <div class="nutrition-item">
+                                                            <div class="nutrition-label">
+                                                                <span class="nutrition-name">Protein</span>
+                                                                <span>
+                                                                    <span class="nutrition-values">{{ protein|floatformat:0 }} / {{ protein_target }}g</span>
+                                                                    <span class="nutrition-percentage">{{ protein_pct }}%</span>
+                                                                </span>
+                                                            </div>
+                                                            <div class="progress">
+                                                                <div class="progress-bar bg-success" 
+                                                                     role="progressbar"
+                                                                     aria-valuenow="{{ protein_pct }}"
+                                                                     aria-valuemin="0"
+                                                                     aria-valuemax="100"
+                                                                     data-width="{{ protein_pct }}"></div>
+                                                            </div>
+                                                        </div>
+                                                        {% endwith %}
+                                                    {% endif %}
+                                                {% endwith %}
+
+                                                <!-- Carbohydrates -->
+                                                {% with log.nutrition_data.carbohydrates_total_g as carbs %}
+                                                    {% if carbs %}
+                                                        {% get_nutrition_target 'carbohydrates_total_g' as carbs_target %}
+                                                        {% with carbs|nutrition_percentage:carbs_target as carbs_pct %}
+                                                        <div class="nutrition-item">
+                                                            <div class="nutrition-label">
+                                                                <span class="nutrition-name">Carbs</span>
+                                                                <span>
+                                                                    <span class="nutrition-values">{{ carbs|floatformat:0 }} / {{ carbs_target }}g</span>
+                                                                    <span class="nutrition-percentage">{{ carbs_pct }}%</span>
+                                                                </span>
+                                                            </div>
+                                                            <div class="progress">
+                                                                <div class="progress-bar bg-info" 
+                                                                     role="progressbar"
+                                                                     aria-valuenow="{{ carbs_pct }}"
+                                                                     aria-valuemin="0"
+                                                                     aria-valuemax="100"
+                                                                     data-width="{{ carbs_pct }}"></div>
+                                                            </div>
+                                                        </div>
+                                                        {% endwith %}
+                                                    {% endif %}
+                                                {% endwith %}
+
+                                                <!-- Fat -->
+                                                {% with log.nutrition_data.fat_total_g as fat %}
+                                                    {% if fat %}
+                                                        {% get_nutrition_target 'fat_total_g' as fat_target %}
+                                                        {% with fat|nutrition_percentage:fat_target as fat_pct %}
+                                                        <div class="nutrition-item">
+                                                            <div class="nutrition-label">
+                                                                <span class="nutrition-name">Fat</span>
+                                                                <span>
+                                                                    <span class="nutrition-values">{{ fat|floatformat:0 }} / {{ fat_target }}g</span>
+                                                                    <span class="nutrition-percentage">{{ fat_pct }}%</span>
+                                                                </span>
+                                                            </div>
+                                                            <div class="progress">
+                                                                <div class="progress-bar bg-warning" 
+                                                                     role="progressbar"
+                                                                     aria-valuenow="{{ fat_pct }}"
+                                                                     aria-valuemin="0"
+                                                                     aria-valuemax="100"
+                                                                     data-width="{{ fat_pct }}"></div>
+                                                            </div>
+                                                        </div>
+                                                        {% endwith %}
+                                                    {% endif %}
+                                                {% endwith %}
+
+                                                <!-- Fiber -->
+                                                {% with log.nutrition_data.fiber_g as fiber %}
+                                                    {% if fiber %}
+                                                        {% get_nutrition_target 'fiber_g' as fiber_target %}
+                                                        {% with fiber|nutrition_percentage:fiber_target as fiber_pct %}
+                                                        <div class="nutrition-item">
+                                                            <div class="nutrition-label">
+                                                                <span class="nutrition-name">Fiber</span>
+                                                                <span>
+                                                                    <span class="nutrition-values">{{ fiber|floatformat:0 }} / {{ fiber_target }}g</span>
+                                                                    <span class="nutrition-percentage">{{ fiber_pct }}%</span>
+                                                                </span>
+                                                            </div>
+                                                            <div class="progress">
+                                                                <div class="progress-bar bg-success" 
+                                                                     role="progressbar"
+                                                                     aria-valuenow="{{ fiber_pct }}"
+                                                                     aria-valuemin="0"
+                                                                     aria-valuemax="100"
+                                                                     data-width="{{ fiber_pct }}"></div>
+                                                            </div>
+                                                        </div>
+                                                        {% endwith %}
+                                                    {% endif %}
+                                                {% endwith %}
+
+                                                <!-- Sodium -->
+                                                {% with log.nutrition_data.sodium_mg as sodium %}
+                                                    {% if sodium %}
+                                                        {% get_nutrition_target 'sodium_mg' as sodium_target %}
+                                                        {% with sodium|nutrition_percentage:sodium_target as sodium_pct %}
+                                                        <div class="nutrition-item">
+                                                            <div class="nutrition-label">
+                                                                <span class="nutrition-name">Sodium</span>
+                                                                <span>
+                                                                    <span class="nutrition-values">{{ sodium|floatformat:0 }} / {{ sodium_target }}mg</span>
+                                                                    <span class="nutrition-percentage">{{ sodium_pct }}%</span>
+                                                                </span>
+                                                            </div>
+                                                            <div class="progress">
+                                                                <div class="progress-bar bg-danger" 
+                                                                     role="progressbar"
+                                                                     aria-valuenow="{{ sodium_pct }}"
+                                                                     aria-valuemin="0"
+                                                                     aria-valuemax="100"
+                                                                     data-width="{{ sodium_pct }}"></div>
+                                                            </div>
+                                                        </div>
+                                                        {% endwith %}
+                                                    {% endif %}
+                                                {% endwith %}
+                                            </div>
+                                        {% else %}
+                                            <small class="text-muted">No nutrition data available</small>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
                 {% else %}
                     <div class="text-center py-5">
                         <p class="text-muted">No meals logged yet today.</p>
@@ -156,4 +343,14 @@
     </div>
 
 </div>
+
+<script>
+// Set progress bar widths after page load
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.progress-bar[data-width]').forEach(function(bar) {
+        const width = bar.getAttribute('data-width');
+        bar.style.width = width + '%';
+    });
+});
+</script>
 {% endblock %}
