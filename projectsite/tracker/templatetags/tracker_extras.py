@@ -45,6 +45,8 @@ DAILY_TARGETS = {
     'sodium_mg': 2300,  # milligrams
     'potassium_mg': 3500,  # milligrams
     'cholesterol_mg': 300,  # milligrams
+    'sugar_g': 50,  # grams (recommended daily limit)
+    'saturated_fat_g': 20,  # grams (recommended daily limit)
 }
 
 @register.simple_tag

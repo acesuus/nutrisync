@@ -1,6 +1,7 @@
 {% extends 'tracker/base.html' %}
 {% load tracker_extras %}
 {% load static %}
+{% load l10n %}
 
 {% block title %}Home - NutriSync{% endblock %}
 
@@ -255,99 +256,87 @@
                 {% if todays_logs %}
                     <div class="nutrition-card">
                         <h6 class="mb-3" style="font-size: 0.95rem;">Nutrition Facts</h6>
-                        <!-- Use nutrition_totals from context -->
-                            
-                            <!-- Protein -->
-                        {% get_nutrition_target 'protein_g' as protein_target %}
-                        {% with protein_pct=nutrition_totals.protein|nutrition_percentage:protein_target %}
+                        
+                        <!-- Calories -->
+                        <div class="nutrition-item">
+                            <div class="nutrition-label">
+                                <span class="nutrition-name">Calories</span>
+                                <span class="nutrition-values">{{ nutrition_totals.calories|floatformat:0 }} kcal</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Protein -->
                         <div class="nutrition-item">
                             <div class="nutrition-label">
                                 <span class="nutrition-name">Protein</span>
-                                <span>
-                                    <span class="nutrition-values">{{ nutrition_totals.protein|floatformat:0 }} / {{ protein_target }}g</span>
-                                    <span class="nutrition-percentage">{{ protein_pct }}%</span>
-                                </span>
-                            </div>
-                            <div class="progress">
-                                <div class="progress-bar bg-success" role="progressbar" data-width="{{ protein_pct }}"></div>
+                                <span class="nutrition-values">{{ nutrition_totals.protein|floatformat:1 }}g</span>
                             </div>
                         </div>
-                        {% endwith %}
-
-                        {% get_nutrition_target 'carbohydrates_total_g' as carbs_target %}
-                        {% with carbs_pct=nutrition_totals.carbs|nutrition_percentage:carbs_target %}
+                        
                         <!-- Carbs -->
                         <div class="nutrition-item">
                             <div class="nutrition-label">
-                                <span class="nutrition-name">Carbs</span>
-                                <span>
-                                    
-                                    <span class="nutrition-values">{{ nutrition_totals.carbs|floatformat:0 }} / {{ carbs_target }}g</span>
-                                    <span class="nutrition-percentage">{{ carbs_pct }}%</span>
-                                  
-                                </span>
-                            </div>
-                            <div class="progress">
-                                <div class="progress-bar bg-info" role="progressbar" data-width="{{ carbs_pct }}"></div>
+                                <span class="nutrition-name">Carbohydrates</span>
+                                <span class="nutrition-values">{{ nutrition_totals.carbs|floatformat:1 }}g</span>
                             </div>
                         </div>
-                        {% endwith %}
-
-                        {% get_nutrition_target 'fat_total_g' as fat_target %}
-                        {% with fat_pct=nutrition_totals.fat|nutrition_percentage:fat_target %}
+                        
                         <!-- Fat -->
                         <div class="nutrition-item">
                             <div class="nutrition-label">
-                                <span class="nutrition-name">Fat</span>
-                                <span>
-                                    
-                                    <span class="nutrition-values">{{ nutrition_totals.fat|floatformat:0 }} / {{ fat_target }}g</span>
-                                    <span class="nutrition-percentage">{{ fat_pct }}%</span>
-                                
-                                </span>
-                            </div>
-                            <div class="progress">
-                                <div class="progress-bar bg-warning" role="progressbar" data-width="{{ fat_pct }}"></div>
+                                <span class="nutrition-name">Total Fat</span>
+                                <span class="nutrition-values">{{ nutrition_totals.fat|floatformat:1 }}g</span>
                             </div>
                         </div>
-                        {% endwith %}
+                        
+                        <!-- Saturated Fat -->
+                        <div class="nutrition-item">
+                            <div class="nutrition-label">
+                                <span class="nutrition-name">Saturated Fat</span>
+                                <span class="nutrition-values">{{ nutrition_totals.saturated_fat|floatformat:1 }}g</span>
+                            </div>
+                        </div>
+                        
                         <!-- Fiber -->
-                        {% get_nutrition_target 'fiber_g' as fiber_target %}
-                        {% with fiber_pct=nutrition_totals.fiber|nutrition_percentage:fiber_target %}
                         <div class="nutrition-item">
                             <div class="nutrition-label">
                                 <span class="nutrition-name">Fiber</span>
-                                <span>
-                                  
-                                    <span class="nutrition-values">{{ nutrition_totals.fiber|floatformat:0 }} / {{ fiber_target }}g</span>
-                                    <span class="nutrition-percentage">{{ fiber_pct }}%</span>
-                        
-                                </span>
-                            </div>
-                            <div class="progress">
-                                <div class="progress-bar bg-success" role="progressbar" data-width="{{ fiber_pct }}"></div>
+                                <span class="nutrition-values">{{ nutrition_totals.fiber|floatformat:1 }}g</span>
                             </div>
                         </div>
-                        {% endwith %}
+                        
+                        <!-- Sugar -->
+                        <div class="nutrition-item">
+                            <div class="nutrition-label">
+                                <span class="nutrition-name">Sugar</span>
+                                <span class="nutrition-values">{{ nutrition_totals.sugar|floatformat:1 }}g</span>
+                            </div>
+                        </div>
+                        
                         <!-- Sodium -->
-                        {% get_nutrition_target 'sodium_mg' as sodium_target %}
-                        {% with sodium_pct=nutrition_totals.sodium|nutrition_percentage:sodium_target %}
                         <div class="nutrition-item">
                             <div class="nutrition-label">
                                 <span class="nutrition-name">Sodium</span>
-                                <span>
-                                   
-                                    <span class="nutrition-values">{{ nutrition_totals.sodium|floatformat:0 }} / {{ sodium_target }}mg</span>
-                                    <span class="nutrition-percentage">{{ sodium_pct }}%</span>
-  
-                                </span>
+                                <span class="nutrition-values">{{ nutrition_totals.sodium|floatformat:0 }}mg</span>
                             </div>
-                            <div class="progress">
-                                <div class="progress-bar bg-danger" role="progressbar" data-width="{{ sodium_pct }}"></div>
+                        </div>
+                        
+                        <!-- Potassium -->
+                        <div class="nutrition-item">
+                            <div class="nutrition-label">
+                                <span class="nutrition-name">Potassium</span>
+                                <span class="nutrition-values">{{ nutrition_totals.potassium|floatformat:0 }}mg</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Cholesterol -->
+                        <div class="nutrition-item">
+                            <div class="nutrition-label">
+                                <span class="nutrition-name">Cholesterol</span>
+                                <span class="nutrition-values">{{ nutrition_totals.cholesterol|floatformat:0 }}mg</span>
                             </div>
                         </div>
                     </div>
-                    {% endwith %}
                 {% else %}
                     <div class="text-center py-4">
                         <p class="text-muted mb-0">No meals logged today</p>
@@ -364,7 +353,7 @@
         <div class="goals-card mb-4">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5 class="mb-0">🎯 Daily Nutrition Goals</h5>
-                <small class="text-muted">Click values to edit</small>
+    
             </div>
 
             <div class="row">
@@ -420,10 +409,10 @@
 
                 <div class="col-md-4">
                     <div class="goal-item">
-                        <span class="goal-label">Sodium</span>
+                        <span class="goal-label">Sugar</span>
                         <div>
-                            <input type="number" class="goal-input" id="goal-sodium" value="2300">
-                            <span class="goal-unit">mg</span>
+                            <input type="number" class="goal-input" id="goal-sugar" value="50">
+                            <span class="goal-unit">g</span>
                         </div>
                     </div>
                 </div>
@@ -686,62 +675,110 @@
 
                     <!-- Overall Progress -->
                     <div class="overall-progress">
-                        <h6 class="progress-title">📊 Overall Daily Progress</h6>
-                        
-                        <!-- Calories -->
-                        {% with calories_pct=nutrition_totals.calories|nutrition_percentage:2000 %}
-                        <div class="progress-item">
-                            <div class="progress-header">
-                                <span>Calories</span>
-                                <span>{{ nutrition_totals.calories|floatformat:0 }} / 2000 kcal ({{ calories_pct }}%)</span>
+                        <div class="nutrition-card">
+                            <h6 class="mb-3" style="font-size: 0.95rem;">📊 Overall Daily Progress</h6>
+                            
+                            <!-- Calories -->
+                            {% with calories_pct=nutrition_totals.calories|nutrition_percentage:2000 %}
+                            <div class="nutrition-item">
+                                <div class="nutrition-label">
+                                    <span class="nutrition-name">Calories</span>
+                                    <span>
+                                        <span class="nutrition-values">{{ nutrition_totals.calories|floatformat:0 }} / 2000 kcal</span>
+                                        <span class="nutrition-percentage">{{ calories_pct }}%</span>
+                                    </span>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar bg-primary" role="progressbar" data-width="{{ calories_pct }}"></div>
+                                </div>
                             </div>
-                            <div class="progress progress-large">
-                                <div class="progress-bar bg-primary" role="progressbar" data-width="{{ calories_pct }}"></div>
+                            {% endwith %}
+                            
+                            <!-- Protein -->
+                            {% get_nutrition_target 'protein_g' as protein_target %}
+                            {% with protein_pct=nutrition_totals.protein|nutrition_percentage:protein_target %}
+                            <div class="nutrition-item">
+                                <div class="nutrition-label">
+                                    <span class="nutrition-name">Protein</span>
+                                    <span>
+                                        <span class="nutrition-values">{{ nutrition_totals.protein|floatformat:1 }} / {{ protein_target }}g</span>
+                                        <span class="nutrition-percentage">{{ protein_pct }}%</span>
+                                    </span>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar bg-success" role="progressbar" data-width="{{ protein_pct }}"></div>
+                                </div>
                             </div>
+                            {% endwith %}
+                            
+                            <!-- Carbs -->
+                            {% get_nutrition_target 'carbohydrates_total_g' as carbs_target %}
+                            {% with carbs_pct=nutrition_totals.carbs|nutrition_percentage:carbs_target %}
+                            <div class="nutrition-item">
+                                <div class="nutrition-label">
+                                    <span class="nutrition-name">Carbohydrates</span>
+                                    <span>
+                                        <span class="nutrition-values">{{ nutrition_totals.carbs|floatformat:1 }} / {{ carbs_target }}g</span>
+                                        <span class="nutrition-percentage">{{ carbs_pct }}%</span>
+                                    </span>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar bg-info" role="progressbar" data-width="{{ carbs_pct }}"></div>
+                                </div>
+                            </div>
+                            {% endwith %}
+                            
+                            <!-- Fat -->
+                            {% get_nutrition_target 'fat_total_g' as fat_target %}
+                            {% with fat_pct=nutrition_totals.fat|nutrition_percentage:fat_target %}
+                            <div class="nutrition-item">
+                                <div class="nutrition-label">
+                                    <span class="nutrition-name">Total Fat</span>
+                                    <span>
+                                        <span class="nutrition-values">{{ nutrition_totals.fat|floatformat:1 }} / {{ fat_target }}g</span>
+                                        <span class="nutrition-percentage">{{ fat_pct }}%</span>
+                                    </span>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar bg-warning" role="progressbar" data-width="{{ fat_pct }}"></div>
+                                </div>
+                            </div>
+                            {% endwith %}
+                            
+                            <!-- Fiber -->
+                            {% get_nutrition_target 'fiber_g' as fiber_target %}
+                            {% with fiber_pct=nutrition_totals.fiber|nutrition_percentage:fiber_target %}
+                            <div class="nutrition-item">
+                                <div class="nutrition-label">
+                                    <span class="nutrition-name">Fiber</span>
+                                    <span>
+                                        <span class="nutrition-values">{{ nutrition_totals.fiber|floatformat:1 }} / {{ fiber_target }}g</span>
+                                        <span class="nutrition-percentage">{{ fiber_pct }}%</span>
+                                    </span>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar bg-success" role="progressbar" data-width="{{ fiber_pct }}"></div>
+                                </div>
+                            </div>
+                            {% endwith %}
+                            
+                            <!-- Sugar -->
+                            {% get_nutrition_target 'sugar_g' as sugar_target %}
+                            {% with sugar_pct=nutrition_totals.sugar|nutrition_percentage:sugar_target %}
+                            <div class="nutrition-item">
+                                <div class="nutrition-label">
+                                    <span class="nutrition-name">Sugar</span>
+                                    <span>
+                                        <span class="nutrition-values">{{ nutrition_totals.sugar|floatformat:1 }} / {{ sugar_target }}g</span>
+                                        <span class="nutrition-percentage">{{ sugar_pct }}%</span>
+                                    </span>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar bg-danger" role="progressbar" data-width="{{ sugar_pct }}"></div>
+                                </div>
+                            </div>
+                            {% endwith %}
                         </div>
-                        {% endwith %}
-
-                        <!-- Protein -->
-                        {% get_nutrition_target 'protein_g' as protein_target %}
-                        {% with protein_pct=nutrition_totals.protein|nutrition_percentage:protein_target %}
-                        <div class="progress-item">
-                            <div class="progress-header">
-                                <span>Protein</span>
-                                <span>{{ nutrition_totals.protein|floatformat:0 }} / {{ protein_target }}g ({{ protein_pct }}%)</span>
-                            </div>
-                            <div class="progress progress-large">
-                                <div class="progress-bar bg-success" role="progressbar" data-width="{{ protein_pct }}"></div>
-                            </div>
-                        </div>
-                        {% endwith %}
-
-                        <!-- Carbs -->
-                        {% get_nutrition_target 'carbohydrates_total_g' as carbs_target %}
-                        {% with carbs_pct=nutrition_totals.carbs|nutrition_percentage:carbs_target %}
-                        <div class="progress-item">
-                            <div class="progress-header">
-                                <span>Carbs</span>
-                                <span>{{ nutrition_totals.carbs|floatformat:0 }} / {{ carbs_target }}g ({{ carbs_pct }}%)</span>
-                            </div>
-                            <div class="progress progress-large">
-                                <div class="progress-bar bg-info" role="progressbar" data-width="{{ carbs_pct }}"></div>
-                            </div>
-                        </div>
-                        {% endwith %}
-
-                        <!-- Fat -->
-                        {% get_nutrition_target 'fat_total_g' as fat_target %}
-                        {% with fat_pct=nutrition_totals.fat|nutrition_percentage:fat_target %}
-                        <div class="progress-item">
-                            <div class="progress-header">
-                                <span>Fat</span>
-                                <span>{{ nutrition_totals.fat|floatformat:0 }} / {{ fat_target }}g ({{ fat_pct }}%)</span>
-                            </div>
-                            <div class="progress progress-large">
-                                <div class="progress-bar bg-warning" role="progressbar" data-width="{{ fat_pct }}"></div>
-                            </div>
-                        </div>
-                        {% endwith %}
                     </div>
 
                 {% else %}
@@ -756,19 +793,189 @@
 
 </div>
 
+<!-- Embed nutrition data as JSON to avoid number formatting issues -->
+{{ nutrition_totals|json_script:"nutrition-data" }}
+
 <script>
 // Nutrition totals from Django (already calculated in view)
+// Parse from JSON to avoid locale formatting issues
+const nutritionDataElement = document.getElementById('nutrition-data');
+const nutritionData = nutritionDataElement ? JSON.parse(nutritionDataElement.textContent) : {};
+
 const totals = {
-    protein: parseFloat("{{ nutrition_totals.protein|default:0|floatformat:2 }}") || 0,
-    carbs: parseFloat("{{ nutrition_totals.carbs|default:0|floatformat:2 }}") || 0,
-    fat: parseFloat("{{ nutrition_totals.fat|default:0|floatformat:2 }}") || 0,
-    fiber: parseFloat("{{ nutrition_totals.fiber|default:0|floatformat:2 }}") || 0,
-    sodium: parseFloat("{{ nutrition_totals.sodium|default:0|floatformat:2 }}") || 0,
-    calories: parseFloat("{{ nutrition_totals.calories|default:0|floatformat:2 }}") || 0
+    protein: parseFloat(nutritionData.protein) || 0,
+    carbs: parseFloat(nutritionData.carbs) || 0,
+    fat: parseFloat(nutritionData.fat) || 0,
+    fiber: parseFloat(nutritionData.fiber) || 0,
+    sodium: parseFloat(nutritionData.sodium) || 0,
+    sugar: parseFloat(nutritionData.sugar) || 0,
+    potassium: parseFloat(nutritionData.potassium) || 0,
+    cholesterol: parseFloat(nutritionData.cholesterol) || 0,
+    saturated_fat: parseFloat(nutritionData.saturated_fat) || 0,
+    calories: parseFloat(nutritionData.calories) || 0
+};
+
+// Default goals (will be updated from localStorage or user input)
+let goals = {
+    calories: 2000,
+    protein: 50,
+    carbs: 275,
+    fat: 78,
+    fiber: 28,
+    sugar: 50
 };
 
 // Debug output for nutrition totals
 console.log('Nutrition Totals:', totals);
+
+// Helper function to format numbers with commas
+function formatNumber(num) {
+    return Math.round(num).toLocaleString('en-US');
+}
+
+// Function to update the overall progress section with current goals
+function updateOverallProgress() {
+    console.log('Updating overall progress with goals:', goals);
+    console.log('Current totals:', totals);
+    
+    // Get the overall progress container to scope our selectors
+    const overallProgress = document.querySelector('.overall-progress');
+    if (!overallProgress) {
+        console.error('Overall progress section not found!');
+        return;
+    }
+    
+    // Update Calories
+    const caloriesActualPct = Math.round((totals.calories / goals.calories) * 100);
+    const caloriesDisplayPct = Math.min(caloriesActualPct, 100); // Cap display at 100%
+    const caloriesBar = overallProgress.querySelector('.progress-bar.bg-primary');
+    if (caloriesBar) {
+        const caloriesItem = caloriesBar.closest('.nutrition-item');
+        caloriesBar.style.width = caloriesDisplayPct + '%';
+        
+        const caloriesText = caloriesItem?.querySelector('.nutrition-values');
+        if (caloriesText) {
+            caloriesText.textContent = `${formatNumber(totals.calories)} / ${formatNumber(goals.calories)} kcal`;
+            console.log('Updated calories text:', caloriesText.textContent);
+        }
+        
+        const caloriesPctText = caloriesItem?.querySelector('.nutrition-percentage');
+        if (caloriesPctText) {
+            caloriesPctText.textContent = caloriesDisplayPct + '%';
+        }
+    } else {
+        console.error('Calories bar not found!');
+    }
+
+    // Update Protein
+    const proteinActualPct = Math.round((totals.protein / goals.protein) * 100);
+    const proteinDisplayPct = Math.min(proteinActualPct, 100);
+    const proteinBars = overallProgress.querySelectorAll('.progress-bar.bg-success');
+    const proteinBar = proteinBars[0]; // First success bar is protein
+    if (proteinBar) {
+        const proteinItem = proteinBar.closest('.nutrition-item');
+        if (proteinItem && proteinItem.querySelector('.nutrition-name')?.textContent.trim() === 'Protein') {
+            proteinBar.style.width = proteinDisplayPct + '%';
+            const proteinText = proteinItem.querySelector('.nutrition-values');
+            if (proteinText) {
+                proteinText.textContent = `${totals.protein.toLocaleString('en-US', {minimumFractionDigits: 1, maximumFractionDigits: 1})} / ${goals.protein}g`;
+                console.log('Updated protein text:', proteinText.textContent);
+            }
+            const proteinPctText = proteinItem.querySelector('.nutrition-percentage');
+            if (proteinPctText) {
+                proteinPctText.textContent = proteinDisplayPct + '%';
+            }
+        }
+    } else {
+        console.error('Protein bar not found!');
+    }
+
+    // Update Carbs
+    const carbsActualPct = Math.round((totals.carbs / goals.carbs) * 100);
+    const carbsDisplayPct = Math.min(carbsActualPct, 100);
+    const carbsBar = overallProgress.querySelector('.progress-bar.bg-info');
+    if (carbsBar) {
+        const carbsItem = carbsBar.closest('.nutrition-item');
+        if (carbsItem && carbsItem.querySelector('.nutrition-name')?.textContent.trim() === 'Carbohydrates') {
+            carbsBar.style.width = carbsDisplayPct + '%';
+            const carbsText = carbsItem.querySelector('.nutrition-values');
+            if (carbsText) {
+                carbsText.textContent = `${totals.carbs.toLocaleString('en-US', {minimumFractionDigits: 1, maximumFractionDigits: 1})} / ${goals.carbs}g`;
+                console.log('Updated carbs text:', carbsText.textContent);
+            }
+            const carbsPctText = carbsItem.querySelector('.nutrition-percentage');
+            if (carbsPctText) {
+                carbsPctText.textContent = carbsDisplayPct + '%';
+            }
+        }
+    } else {
+        console.error('Carbs bar not found!');
+    }
+
+    // Update Fat
+    const fatActualPct = Math.round((totals.fat / goals.fat) * 100);
+    const fatDisplayPct = Math.min(fatActualPct, 100);
+    const fatBar = overallProgress.querySelector('.progress-bar.bg-warning');
+    if (fatBar) {
+        const fatItem = fatBar.closest('.nutrition-item');
+        if (fatItem && fatItem.querySelector('.nutrition-name')?.textContent.trim() === 'Total Fat') {
+            fatBar.style.width = fatDisplayPct + '%';
+            const fatText = fatItem.querySelector('.nutrition-values');
+            if (fatText) {
+                fatText.textContent = `${totals.fat.toFixed(1)} / ${goals.fat}g`;
+            }
+            const fatPctText = fatItem.querySelector('.nutrition-percentage');
+            if (fatPctText) {
+                fatPctText.textContent = fatDisplayPct + '%';
+            }
+        }
+    }
+
+    // Update Fiber
+    const fiberActualPct = Math.round((totals.fiber / goals.fiber) * 100);
+    const fiberDisplayPct = Math.min(fiberActualPct, 100);
+    const fiberBars = overallProgress.querySelectorAll('.progress-bar.bg-success');
+    const fiberBar = fiberBars[1]; // Second success bar is fiber
+    if (fiberBar) {
+        const fiberItem = fiberBar.closest('.nutrition-item');
+        if (fiberItem && fiberItem.querySelector('.nutrition-name')?.textContent.trim() === 'Fiber') {
+            fiberBar.style.width = fiberDisplayPct + '%';
+            const fiberText = fiberItem.querySelector('.nutrition-values');
+            if (fiberText) {
+                fiberText.textContent = `${totals.fiber.toFixed(1)} / ${goals.fiber}g`;
+            }
+            const fiberPctText = fiberItem.querySelector('.nutrition-percentage');
+            if (fiberPctText) {
+                fiberPctText.textContent = fiberDisplayPct + '%';
+            }
+        }
+    }
+
+    // Update Sugar
+    const sugarActualPct = Math.round((totals.sugar / goals.sugar) * 100);
+    const sugarDisplayPct = Math.min(sugarActualPct, 100);
+    const sugarBar = overallProgress.querySelector('.progress-bar.bg-danger');
+    if (sugarBar) {
+        const sugarItem = sugarBar.closest('.nutrition-item');
+        if (sugarItem && sugarItem.querySelector('.nutrition-name')?.textContent.trim() === 'Sugar') {
+            sugarBar.style.width = sugarDisplayPct + '%';
+            const sugarText = sugarItem.querySelector('.nutrition-values');
+            if (sugarText) {
+                sugarText.textContent = `${totals.sugar.toFixed(1)} / ${goals.sugar}g`;
+            }
+            const sugarPctText = sugarItem.querySelector('.nutrition-percentage');
+            if (sugarPctText) {
+                sugarPctText.textContent = sugarDisplayPct + '%';
+            }
+        }
+    }
+}
+
+// Placeholder function for summary card update (if needed in future)
+function updateSummaryCard() {
+    // Currently no summary card to update, but keeping this for future use
+    console.log('Summary card update (placeholder)');
+}
 
 // Calculate totals and update UI
 document.addEventListener('DOMContentLoaded', function() {
@@ -780,17 +987,25 @@ document.addEventListener('DOMContentLoaded', function() {
     // Save goals to localStorage when changed
     const goalInputs = document.querySelectorAll('.goal-input');
     goalInputs.forEach(input => {
-        input.addEventListener('change', function() {
+        // Update on both input (real-time) and change (when user leaves field)
+        const updateGoal = function() {
             const goalType = this.id.replace('goal-', '');
-            goals[goalType] = parseInt(this.value);
+            const value = parseInt(this.value);
             
-            // Save to localStorage
-            localStorage.setItem('nutritionGoals', JSON.stringify(goals));
-            
-            // Update displays
-            updateSummaryCard();
-            updateOverallProgress();
-        });
+            // Only update if value is valid
+            if (value && value > 0) {
+                goals[goalType] = value;
+                
+                // Save to localStorage
+                localStorage.setItem('nutritionGoals', JSON.stringify(goals));
+                
+                // Update displays
+                updateOverallProgress();
+            }
+        };
+        
+        input.addEventListener('input', updateGoal);
+        input.addEventListener('change', updateGoal);
     });
 
     // Load saved goals from localStorage
@@ -804,9 +1019,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 goals[key] = parsedGoals[key];
             }
         });
-        updateSummaryCard();
-        updateOverallProgress();
     }
+    
+    // Update progress bars with current goals (either default or loaded from localStorage)
+    updateOverallProgress();
 });
 </script>
 {% endblock %}

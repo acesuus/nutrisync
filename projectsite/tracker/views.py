@@ -34,6 +34,10 @@ def home(request):
         'fat': 0,
         'fiber': 0,
         'sodium': 0,
+        'sugar': 0,
+        'potassium': 0,
+        'cholesterol': 0,
+        'saturated_fat': 0,
         'calories': 0
     }
     
@@ -44,6 +48,10 @@ def home(request):
             nutrition_totals['fat'] += float(log.nutrition_data.get('fat_total_g', 0))
             nutrition_totals['fiber'] += float(log.nutrition_data.get('fiber_g', 0))
             nutrition_totals['sodium'] += float(log.nutrition_data.get('sodium_mg', 0))
+            nutrition_totals['sugar'] += float(log.nutrition_data.get('sugar_g', 0))
+            nutrition_totals['potassium'] += float(log.nutrition_data.get('potassium_mg', 0))
+            nutrition_totals['cholesterol'] += float(log.nutrition_data.get('cholesterol_mg', 0))
+            nutrition_totals['saturated_fat'] += float(log.nutrition_data.get('saturated_fat_g', 0))
             # Prefer nutrition_data calories over model field
             nutrition_totals['calories'] += float(log.nutrition_data.get('calories', log.calories or 0))
         else:
