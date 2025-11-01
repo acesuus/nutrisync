@@ -59,32 +59,14 @@
     }
 
     .card-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+        background: transparent !important;
         border: none;
+        border-bottom: 1px solid rgba(102, 126, 234, 0.2);
         padding: 1.25rem 1.5rem;
         font-weight: 600;
         letter-spacing: 0.5px;
         position: relative;
-        overflow: hidden;
         z-index: 2;
-    }
-
-    .card-header::after {
-        content: '';
-        position: absolute;
-        top: -50%;
-        right: -50%;
-        width: 200%;
-        height: 200%;
-        background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
-        animation: headerShine 4s infinite;
-        pointer-events: none;
-        z-index: 0;
-    }
-
-    @keyframes headerShine {
-        0%, 100% { transform: translate(0, 0) rotate(0deg); }
-        50% { transform: translate(-20%, -20%) rotate(180deg); }
     }
 
     .card-header h5 {
@@ -93,8 +75,7 @@
         display: flex;
         align-items: center;
         gap: 0.5rem;
-        position: relative;
-        z-index: 1;
+        color: #e2e8f0;
     }
 
     .card-body {
@@ -654,7 +635,7 @@
     <!-- Left Column: Add Food Log Form & Nutrition Summary -->
     <div class="col-md-4">
         <div class="card shadow-sm">
-            <div class="card-header bg-primary text-white">
+            <div class="card-header">
                 <h5 class="mb-0">📝 Log Your Meal</h5>
             </div>
 
@@ -863,7 +844,7 @@
 
         <!-- Today's Meals Section -->
         <div class="card shadow-sm">
-            <div class="card-header bg-success text-white">
+            <div class="card-header">
                 <h5 class="mb-0">📅 Today's Meals ({{ today }})</h5>
             </div>
 
