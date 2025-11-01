@@ -1,15 +1,6 @@
 from django import template
-from decimal import Decimal
 
 register = template.Library()
-
-@register.filter(name='total_calories')
-def total_calories(food_logs):
-    """Calculate total calories from a queryset of food logs"""
-    if not food_logs:
-        return 0
-    total = sum(log.calories or 0 for log in food_logs)
-    return f"{int(total):,}"
 
 @register.filter
 def meal_badge_color(meal_type):
@@ -60,3 +51,9 @@ DAILY_TARGETS = {
 def get_nutrition_target(nutrient):
     """Get daily target for a specific nutrient"""
     return DAILY_TARGETS.get(nutrient, 0)
+
+@register.filter
+def total_calories(food_logs):
+    """Calculate total calories from a queryset of food logs"""
+    total = sum(log.calories or 0 for log in food_logs)
+    return round(total)
