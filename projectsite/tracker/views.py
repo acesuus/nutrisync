@@ -94,13 +94,13 @@ def add_food_log(request):
                 
                 messages.success(
                     request,
-                    f"✨ AI parsed your meal! {food_log.food_name} logged successfully!"
+                    f"{food_log.food_name} logged successfully!"
                 )
                 return redirect('tracker:home')
             else:
                 messages.error(
                     request,
-                    f"⚠️ Could not parse with AI: {api_response.get('message', 'Unknown error')}"
+                    f"{api_response.get('message', 'Unknown error')}"
                 )
                 return redirect('tracker:home')
         else:
