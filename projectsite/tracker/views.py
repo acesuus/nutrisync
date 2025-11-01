@@ -26,12 +26,36 @@ def home(request):
         'dinner': todays_logs.filter(meal_type='dinner').count(),
         'snack': todays_logs.filter(meal_type='snack').count(),
     }
+    
+    # Calculate today's nutrition totals for JavaScript
+    nutrition_totals = {
+        'protein': 0,
+        'carbs': 0,
+        'fat': 0,
+        'fiber': 0,
+        'sodium': 0,
+        'calories': 0
+    }
+    
+    for log in todays_logs:
+        if log.nutrition_data:
+            nutrition_totals['protein'] += float(log.nutrition_data.get('protein_g', 0))
+            nutrition_totals['carbs'] += float(log.nutrition_data.get('carbohydrates_total_g', 0))
+            nutrition_totals['fat'] += float(log.nutrition_data.get('fat_total_g', 0))
+            nutrition_totals['fiber'] += float(log.nutrition_data.get('fiber_g', 0))
+            nutrition_totals['sodium'] += float(log.nutrition_data.get('sodium_mg', 0))
+            # Prefer nutrition_data calories over model field
+            nutrition_totals['calories'] += float(log.nutrition_data.get('calories', log.calories or 0))
+        else:
+            nutrition_totals['calories'] += float(log.calories or 0)
+    
     context = {
         'form': form,
         'todays_logs': todays_logs,
         'today': today,
         'total_logs_today': todays_logs.count(),
         'meal_counts': meal_counts,
+        'nutrition_totals': nutrition_totals,
     }
     return render(request, 'tracker/home.html', context)
 
@@ -70,13 +94,13 @@ def add_food_log(request):
                 
                 messages.success(
                     request,
-                    f"{food_log.food_name} logged successfully!"
+                    f"✨ AI parsed your meal! {food_log.food_name} logged successfully!"
                 )
                 return redirect('tracker:home')
             else:
                 messages.error(
                     request,
-                    f"{api_response.get('message', 'Unknown error')}"
+                    f"⚠️ Could not parse with AI: {api_response.get('message', 'Unknown error')}"
                 )
                 return redirect('tracker:home')
         else:
@@ -114,7 +138,11 @@ def edit_food_log(request, pk):
         # Bind form with POST data and existing instance        
         form = FoodLogForm(request.POST, instance=food_log)
         if form.is_valid():
-            updated_log = form.save()
+            # Preserve nutrition data when updating
+            updated_log = form.save(commit=False)
+            if not updated_log.nutrition_data and food_log.nutrition_data:
+                updated_log.nutrition_data = food_log.nutrition_data
+            updated_log.save()
             messages.success(
                 request,
                 f'✅ {updated_log.food_name} updated successfully!'

@@ -174,4 +174,4 @@ class CalorieNinjasService:
             'calories': round(nutrition_totals['calories'], 1),
             'nutrition': nutrition_totals,  # Store aggregated nutrition
             'items': items  # Include for potential future use
-        }
+        }   
