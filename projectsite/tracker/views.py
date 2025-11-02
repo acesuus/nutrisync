@@ -269,8 +269,22 @@ def dashboard(request):
         
         for log in day_logs:
             if log.nutrition_data:
+                # DEBUG: Print nutrition_data keys for today's logs
+                if day == current_date:
+                    print(f"DEBUG - Food: {log.food_name}")
+                    print(f"DEBUG - nutrition_data keys: {list(log.nutrition_data.keys())}")
+                    print(f"DEBUG - nutrition_data: {log.nutrition_data}")
+                    print(f"DEBUG - carbohydrates_total_g value: {log.nutrition_data.get('carbohydrates_total_g', 'NOT FOUND')}")
+                
                 day_protein += float(log.nutrition_data.get('protein_g', 0))
-                day_carbs += float(log.nutrition_data.get('carbohydrates_total_g', 0))
+                # Try multiple possible field names for carbohydrates
+                carbs_value = (
+                    log.nutrition_data.get('carbohydrates_total_g') or
+                    log.nutrition_data.get('carbohydrates_g') or
+                    log.nutrition_data.get('carbs') or
+                    0
+                )
+                day_carbs += float(carbs_value)
                 day_fat += float(log.nutrition_data.get('fat_total_g', 0))
                 day_calories += float(log.nutrition_data.get('calories', log.calories or 0))
             else:

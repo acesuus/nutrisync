@@ -252,7 +252,7 @@ if (nutrientDistCtx && proteinDataEl && carbsDataEl && fatDataEl) {
     console.log('Carbs Data Detail:', JSON.stringify(carbsData, null, 2));
     console.log('Fat Data:', fatData);
     
-    // Get today's values (last entry in the array)
+  
     const todayProtein = proteinData.length > 0 ? proteinData[proteinData.length - 1].value : 0;
     const todayCarbs = carbsData.length > 0 ? carbsData[carbsData.length - 1].value : 0;
     const todayFat = fatData.length > 0 ? fatData[fatData.length - 1].value : 0;
