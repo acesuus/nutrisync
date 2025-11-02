@@ -4,111 +4,409 @@
 
 {% block title %}Dashboard - NutriSync{% endblock %}
 
+{% block extra_css %}
+<style>
+    /* Modern Page Styling - Semi Dark Blue Theme */
+    body {
+        background: linear-gradient(135deg, #1e3a5f 0%, #2c5282 50%, #1a365d 100%);
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        color: #e2e8f0;
+    }
+
+    /* Dashboard Title */
+    h2 {
+        color: #e2e8f0;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Modern Card Styling */
+    .card {
+        border: none;
+        border-radius: 20px;
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+        background: linear-gradient(135deg, rgba(30, 58, 95, 0.8) 0%, rgba(44, 82, 130, 0.85) 100%);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        border: 2px solid rgba(102, 126, 234, 0.2);
+        background-clip: padding-box;
+        position: relative;
+        color: #e2e8f0;
+    }
+
+    .card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-radius: 20px;
+        padding: 2px;
+        background: linear-gradient(135deg, #667eea, #764ba2, #f093fb, #f5576c);
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        mask-composite: exclude;
+        opacity: 0;
+        transition: opacity 0.4s ease;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    .card:hover::before {
+        opacity: 1;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px rgba(102, 126, 234, 0.3);
+    }
+
+    .card-header {
+        background: transparent !important;
+        border: none;
+        border-bottom: 1px solid rgba(102, 126, 234, 0.2);
+        padding: 1.25rem 1.5rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .card-header h5 {
+        font-size: 1.1rem;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #e2e8f0;
+    }
+
+    .card-body {
+        position: relative;
+        z-index: 2;
+        padding: 1.5rem;
+    }
+
+    /* Stat Cards with Colorful Gradients */
+    .stat-card {
+        border-radius: 20px;
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        border: none;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .stat-card.bg-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+        box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+    }
+
+    .stat-card.bg-success {
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%) !important;
+        box-shadow: 0 8px 32px rgba(17, 153, 142, 0.3);
+    }
+
+    .stat-card.bg-info {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%) !important;
+        box-shadow: 0 8px 32px rgba(79, 172, 254, 0.3);
+    }
+
+    .stat-card.bg-warning {
+        background: linear-gradient(135deg, #fa709a 0%, #fee140 100%) !important;
+        box-shadow: 0 8px 32px rgba(250, 112, 154, 0.3);
+    }
+
+    .stat-card.bg-danger {
+        background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%) !important;
+        box-shadow: 0 8px 32px rgba(245, 87, 108, 0.3);
+    }
+
+    .stat-card:hover {
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .stat-card .display-4 {
+        font-weight: 700;
+        font-size: 2.5rem;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Form Styling */
+    .form-label {
+        font-weight: 600;
+        color: #e2e8f0;
+        margin-bottom: 0.5rem;
+        font-size: 0.95rem;
+        letter-spacing: 0.3px;
+    }
+
+    .form-control, .form-select {
+        border: 2px solid rgba(102, 126, 234, 0.3);
+        border-radius: 12px;
+        padding: 0.75rem 1rem;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        background: linear-gradient(135deg, rgba(26, 54, 93, 0.7) 0%, rgba(30, 58, 95, 0.8) 100%);
+        color: #e2e8f0;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.25);
+        transform: translateY(-2px);
+        background: linear-gradient(135deg, rgba(26, 54, 93, 0.85) 0%, rgba(30, 58, 95, 0.9) 100%);
+        color: #e2e8f0;
+    }
+
+    .form-control::placeholder {
+        color: #a0aec0;
+    }
+
+    /* Button Styling */
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 0.85rem 1.5rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+        background: linear-gradient(135deg, #764ba2 0%, #f093fb 50%, #667eea 100%);
+    }
+
+    .btn-secondary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 0.85rem 1.5rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+    }
+
+    .btn-secondary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-sm {
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+    }
+
+    .btn-outline-primary {
+        border: 2px solid rgba(102, 126, 234, 0.5);
+        color: #a3bffa;
+        background: transparent;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-outline-primary:hover {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-color: #667eea;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .btn-outline-danger {
+        border: 2px solid rgba(245, 87, 108, 0.5);
+        color: #fca5a5;
+        background: transparent;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-outline-danger:hover {
+        background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
+        border-color: #f5576c;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    /* Table Styling */
+    .table {
+        color: #e2e8f0;
+    }
+
+    .table thead th {
+        background: linear-gradient(135deg, rgba(26, 54, 93, 0.9) 0%, rgba(30, 58, 95, 0.95) 100%);
+        color: #e2e8f0;
+        border: none;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        padding: 1rem;
+    }
+
+    .table tbody tr {
+        background: linear-gradient(135deg, rgba(26, 54, 93, 0.6) 0%, rgba(30, 58, 95, 0.7) 100%);
+        border-bottom: 1px solid rgba(102, 126, 234, 0.15);
+        transition: all 0.3s ease;
+    }
+
+    .table tbody tr:hover {
+        background: linear-gradient(135deg, rgba(30, 58, 95, 0.8) 0%, rgba(44, 82, 130, 0.85) 100%);
+        transform: translateX(5px);
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+    }
+
+    .table td {
+        padding: 1rem;
+        border: none;
+        vertical-align: middle;
+    }
+
+    /* Badge Styling */
+    .badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+    }
+
+    .badge.bg-secondary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    }
+
+    /* Text Styling */
+    .text-muted {
+        color: #cbd5e0 !important;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <h2 class="mb-4">📊 Dashboard</h2>
 
-<!-- Filter Section -->
+<!-- Day Navigation Section -->
 <div class="card shadow-sm mb-4">
     <div class="card-body">
-        <form method="get" class="row g-3">
-            <div class="col-md-3">
-                <label for="start_date" class="form-label">Start Date</label>
-                <input type="date" class="form-control" id="start_date" name="start_date" value="{{ start_date }}">
+        <div class="row align-items-center">
+            <div class="col-md-4 text-start">
+                <a href="?date={{ prev_date }}" class="btn btn-primary">
+                    ⬅️ Previous Day
+                </a>
             </div>
-
-            <div class="col-md-3">
-                <label for="end_date" class="form-label">End Date</label>
-                <input type="date" class="form-control" id="end_date" name="end_date" value="{{ end_date }}">
+            <div class="col-md-4 text-center">
+                <h4 class="mb-0" style="color: #e2e8f0; font-weight: 700;">
+                    📅 {{ current_date|date:"F d, Y" }}
+                </h4>
+                <small class="text-muted">{{ current_date|date:"l" }}</small>
             </div>
-
-            <div class="col-md-3">
-                <label for="meal_type" class="form-label">Meal Type</label>
-                <select class="form-control" id="meal_type" name="meal_type">
-                    <option value="">All Meals</option>
-                    <option value="breakfast" {% if meal_filter == 'breakfast' %}selected{% endif %}>Breakfast</option>
-                    <option value="lunch" {% if meal_filter == 'lunch' %}selected{% endif %}>Lunch</option>
-                    <option value="dinner" {% if meal_filter == 'dinner' %}selected{% endif %}>Dinner</option>
-                    <option value="snack" {% if meal_filter == 'snack' %}selected{% endif %}>Snack</option>
-                </select>
+            <div class="col-md-4 text-end">
+                {% if not is_today %}
+                    <a href="?date={{ next_date }}" class="btn btn-primary">
+                        Next Day ➡️
+                    </a>
+                {% else %}
+                    <button class="btn btn-secondary" disabled>
+                        Today
+                    </button>
+                {% endif %}
             </div>
-
-            <div class="col-md-3 d-flex align-items-end gap-2">
-                <button type="submit" class="btn btn-primary flex-fill">🔍 Filter</button>
-                <a href="{% url 'tracker:dashboard' %}" class="btn btn-secondary">Clear</a>
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
-<!-- Statistics Cards -->
+<!-- Daily Nutrient Cards -->
 <div class="row mb-4">
-
+    <!-- Calories Card -->
     <div class="col-md-3">
         <div class="card stat-card bg-primary text-white shadow-sm">
             <div class="card-body text-center">
-                <h3 class="display-4">{{ total_logs }}</h3>
-                <p class="mb-0">Total Meals Logged</p>
+                <h3 class="display-4">{{ daily_nutrition.calories|floatformat:0|default:"0" }}</h3>
+                <p class="mb-0">🔥 Calories</p>
+                <small class="text-white-50">kcal</small>
             </div>
         </div>
     </div>
 
+    <!-- Protein Card -->
     <div class="col-md-3">
         <div class="card stat-card bg-success text-white shadow-sm">
             <div class="card-body text-center">
-                <h3 class="display-4">{{ avg_logs_per_day }}</h3>
-                <p class="mb-0">Avg Meals Per Day</p>
+                <h3 class="display-4">{{ daily_nutrition.protein|floatformat:1|default:"0" }}</h3>
+                <p class="mb-0">💪 Protein</p>
+                <small class="text-white-50">grams</small>
             </div>
         </div>
     </div>
 
+    <!-- Carbs Card -->
     <div class="col-md-3">
         <div class="card stat-card bg-info text-white shadow-sm">
             <div class="card-body text-center">
-                <h3 class="display-4">
-                    {% if most_frequent_meal %}
-                        {{ most_frequent_meal.count }}
-                    {% else %}
-                        0
-                    {% endif %}
-                </h3>
-                <p class="mb-0">
-                    {% if most_frequent_meal %}
-                        {{ most_frequent_meal.meal_type|title }}s
-                    {% else %}
-                        No Data
-                    {% endif %}
-                </p>
+                <h3 class="display-4">{{ daily_nutrition.carbs|floatformat:1|default:"0" }}</h3>
+                <p class="mb-0">🍞 Carbs</p>
+                <small class="text-white-50">grams</small>
             </div>
         </div>
     </div>
 
+    <!-- Fat Card -->
     <div class="col-md-3">
         <div class="card stat-card bg-warning text-white shadow-sm">
             <div class="card-body text-center">
-                <h3 class="display-4">
-                    {% if date_range_start and date_range_end %}
-                        {{ date_range_end|timesince:date_range_start|truncatewords:1 }}
-                    {% else %}
-                        -
-                    {% endif %}
-                </h3>
-                <p class="mb-0">Tracking Period</p>
+                <h3 class="display-4">{{ daily_nutrition.fat|floatformat:1|default:"0" }}</h3>
+                <p class="mb-0">🥑 Fat</p>
+                <small class="text-white-50">grams</small>
             </div>
         </div>
     </div>
 
-    <!-- Total Calories Card -->
+    <!-- Fiber Card -->
     <div class="col-md-3">
         <div class="card stat-card bg-danger text-white shadow-sm">
             <div class="card-body text-center">
-                <h3 class="display-4">
-                    {% if food_logs %}
-                        {{ food_logs|total_calories }}
-                    {% else %}
-                        0
-                    {% endif %}
-                </h3>
-                <p class="mb-0">Total Calories</p>
+                <h3 class="display-4">{{ daily_nutrition.fiber|floatformat:1|default:"0" }}</h3>
+                <p class="mb-0">🌾 Fiber</p>
+                <small class="text-white-50">grams</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sugar Card -->
+    <div class="col-md-3">
+        <div class="card stat-card bg-secondary text-white shadow-sm" style="background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%) !important; box-shadow: 0 8px 32px rgba(236, 72, 153, 0.3);">
+            <div class="card-body text-center">
+                <h3 class="display-4">{{ daily_nutrition.sugar|floatformat:1|default:"0" }}</h3>
+                <p class="mb-0">🍬 Sugar</p>
+                <small class="text-white-50">grams</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sodium Card -->
+    <div class="col-md-3">
+        <div class="card stat-card bg-secondary text-white shadow-sm" style="background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%) !important; box-shadow: 0 8px 32px rgba(139, 92, 246, 0.3);">
+            <div class="card-body text-center">
+                <h3 class="display-4">{{ daily_nutrition.sodium|floatformat:0|default:"0" }}</h3>
+                <p class="mb-0">🧂 Sodium</p>
+                <small class="text-white-50">mg</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Meals Logged Card -->
+    <div class="col-md-3">
+        <div class="card stat-card bg-secondary text-white shadow-sm" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important; box-shadow: 0 8px 32px rgba(16, 185, 129, 0.3);">
+            <div class="card-body text-center">
+                <h3 class="display-4">{{ daily_meals_count|default:"0" }}</h3>
+                <p class="mb-0">🍽️ Meals Logged</p>
+                <small class="text-white-50">today</small>
             </div>
         </div>
     </div>
@@ -116,34 +414,49 @@
 </div>
 
 <!-- Charts Section -->
+<!-- Main Calorie Chart with Goal Line -->
 <div class="row mb-4">
-    <div class="col-md-6">
+    <div class="col-12">
         <div class="card shadow-sm">
             <div class="card-header">
-                <h5 class="mb-0">📈 Meals Logged (Last 7 Days)</h5>
+                <h5 class="mb-0">🔥 Daily Calorie Intake vs Goal (Last 7 Days)</h5>
             </div>
-            <div class="card-body">
-                <canvas id="dailyLogsChart"></canvas>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-6">
-        <div class="card shadow-sm">
-            <div class="card-header">
-                <h5 class="mb-0">🥧 Meal Type Distribution</h5>
-            </div>
-            <div class="card-body">
-                <canvas id="mealTypeChart"></canvas>
+            <div class="card-body" style="min-height: 350px;">
+                <canvas id="caloriesChart"></canvas>
             </div>
         </div>
     </div>
 </div>
 
-<!-- All Logs Table -->
+<!-- Macronutrient Charts -->
+<div class="row mb-4">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h5 class="mb-0">📊 Macronutrients Trend (Last 7 Days)</h5>
+            </div>
+            <div class="card-body" style="min-height: 350px;">
+                <canvas id="macrosComboChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h5 class="mb-0">🥧 Nutrient Distribution (Today)</h5>
+            </div>
+            <div class="card-body" style="min-height: 350px;">
+                <canvas id="nutrientDistributionChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Daily Meals Table -->
 <div class="card shadow-sm">
     <div class="card-header">
-        <h5 class="mb-0">📋 All Food Logs</h5>
+        <h5 class="mb-0">📋 Meals for {{ current_date|date:"F d, Y" }}</h5>
     </div>
     <div class="card-body">
         {% if food_logs %}
@@ -151,31 +464,55 @@
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th>Date</th>
                             <th>Food Name</th>
                             <th>Meal Type</th>
-                            <th>Notes</th>
+                            <th>Calories</th>
+                            <th>Protein</th>
+                            <th>Carbs</th>
+                            <th>Fat</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for log in food_logs %}
                             <tr>
-                                <td>{{ log.date }}</td>
                                 <td><strong>{{ log.food_name }}</strong></td>
                                 <td>
-                                    <span class="badge bg-secondary">{{ log.get_meal_type_display }}</span>
-                                </td>
-                                <td>
-                                    {% if log.description %}
-                                        <small class="text-muted">{{ log.description|truncatewords:15 }}</small>
+                                    {% if log.meal_type == 'breakfast' %}
+                                        <span class="badge" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%) !important;">🌅 {{ log.get_meal_type_display }}</span>
+                                    {% elif log.meal_type == 'lunch' %}
+                                        <span class="badge" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%) !important;">☀️ {{ log.get_meal_type_display }}</span>
+                                    {% elif log.meal_type == 'dinner' %}
+                                        <span class="badge" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%) !important;">🌙 {{ log.get_meal_type_display }}</span>
                                     {% else %}
-                                        <small class="text-muted">-</small>
+                                        <span class="badge bg-secondary">🍎 {{ log.get_meal_type_display }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ log.calories|floatformat:0|default:"0" }} kcal</td>
+                                <td>
+                                    {% if log.nutrition_data %}
+                                        {{ log.nutrition_data.protein_g|floatformat:1 }}g
+                                    {% else %}
+                                        -
                                     {% endif %}
                                 </td>
                                 <td>
-                                    <a href="{% url 'tracker:edit_food_log' log.pk %}" class="btn btn-sm btn-outline-primary">Edit</a>
-                                    <a href="{% url 'tracker:delete_food_log' log.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                                    {% if log.nutrition_data %}
+                                        {{ log.nutrition_data.carbohydrates_total_g|floatformat:1 }}g
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if log.nutrition_data %}
+                                        {{ log.nutrition_data.fat_total_g|floatformat:1 }}g
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{% url 'tracker:edit_food_log' log.pk %}" class="btn btn-sm btn-outline-primary">✏️</a>
+                                    <a href="{% url 'tracker:delete_food_log' log.pk %}" class="btn btn-sm btn-outline-danger">🗑️</a>
                                 </td>
                             </tr>
                         {% endfor %}
@@ -184,8 +521,8 @@
             </div>
         {% else %}
             <div class="text-center py-5">
-                <p class="text-muted">No food logs found.</p>
-                <a href="{% url 'tracker:home' %}" class="btn btn-primary">Add Your First Meal</a>
+                <p class="text-muted" style="font-size: 1.1rem;">No meals logged for this day</p>
+                <a href="{% url 'tracker:home' %}" class="btn btn-primary">➕ Add a Meal</a>
             </div>
         {% endif %}
     </div>
@@ -194,11 +531,20 @@
 
 {% block extra_js %}
 <!-- Hidden elements for chart data -->
-<script type="application/json" id="daily-counts-data">
-    {{ daily_counts_json|safe }}
+<script type="application/json" id="calories-data">
+    {{ calories_chart_json|safe }}
 </script>
-<script type="application/json" id="meal-distribution-data">
-    {{ meal_distribution_json|safe }}
+<script type="application/json" id="protein-data">
+    {{ protein_chart_json|safe }}
+</script>
+<script type="application/json" id="carbs-data">
+    {{ carbs_chart_json|safe }}
+</script>
+<script type="application/json" id="fat-data">
+    {{ fat_chart_json|safe }}
+</script>
+<script type="application/json" id="calorie-goal">
+    {{ calorie_goal }}
 </script>
 
 <!-- External Scripts -->

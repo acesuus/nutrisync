@@ -190,77 +190,128 @@ def delete_food_log(request, pk):
 
 def dashboard(request):
     """
-    Dashboard showing all food logs with:
-    - Date range filtering
-    - Statistics
+    Dashboard showing daily nutrition with:
+    - Day-by-day navigation
+    - Daily nutrient totals
     - Charts data
     """
-    start_date = request.GET.get('start_date')
-    end_date = request.GET.get('end_date')
-    meal_filter = request.GET.get('meal_type', '')
-
-    # Filter food logs (you can customize filters here)
-    food_logs = FoodLog.objects.all()
-
-    # Use utility functions to compute stats and chart data
-    stats = calculate_statistics(food_logs)
-    chart_data = prepare_chart_data(food_logs)
-
-    if start_date:
-        food_logs = food_logs.filter(date__gte=start_date)
-    if end_date:
-        food_logs = food_logs.filter(date__lte=end_date)
-    if meal_filter:
-        food_logs = food_logs.filter(meal_type=meal_filter)
-
-    total_logs = food_logs.count()
-
-    meal_type_counts = food_logs.values('meal_type').annotate(
-        count=Count('id')
-    ).order_by('-count')
-
-    if food_logs.exists():
-        date_range_start = food_logs.order_by('date').first().date
-        date_range_end = food_logs.order_by('-date').first().date
-        total_days = (date_range_end - date_range_start).days + 1
-        avg_logs_per_day = total_logs / total_days if total_days > 0 else 0
-    else:
-        date_range_start = None
-        date_range_end = None
-        avg_logs_per_day = 0
-
-    most_frequent_meal = meal_type_counts.first() if meal_type_counts else None
-
+    # Get the current date from query parameter or default to today
+    date_param = request.GET.get('date')
     today = timezone.now().date()
+    
+    if date_param:
+        try:
+            from datetime import datetime
+            current_date = datetime.strptime(date_param, '%Y-%m-%d').date()
+        except ValueError:
+            current_date = today
+    else:
+        current_date = today
+    
+    # Calculate previous and next dates
+    prev_date = current_date - timedelta(days=1)
+    next_date = current_date + timedelta(days=1)
+    is_today = current_date == today
+    
+    # Get food logs for the current date
+    food_logs = FoodLog.objects.filter(date=current_date)
+    daily_meals_count = food_logs.count()
+    
+    # Calculate daily nutrition totals
+    daily_nutrition = {
+        'calories': 0,
+        'protein': 0,
+        'carbs': 0,
+        'fat': 0,
+        'fiber': 0,
+        'sugar': 0,
+        'sodium': 0,
+        'potassium': 0,
+        'cholesterol': 0,
+        'saturated_fat': 0,
+    }
+    
+    for log in food_logs:
+        if log.nutrition_data:
+            daily_nutrition['protein'] += float(log.nutrition_data.get('protein_g', 0))
+            daily_nutrition['carbs'] += float(log.nutrition_data.get('carbohydrates_total_g', 0))
+            daily_nutrition['fat'] += float(log.nutrition_data.get('fat_total_g', 0))
+            daily_nutrition['fiber'] += float(log.nutrition_data.get('fiber_g', 0))
+            daily_nutrition['sodium'] += float(log.nutrition_data.get('sodium_mg', 0))
+            daily_nutrition['sugar'] += float(log.nutrition_data.get('sugar_g', 0))
+            daily_nutrition['potassium'] += float(log.nutrition_data.get('potassium_mg', 0))
+            daily_nutrition['cholesterol'] += float(log.nutrition_data.get('cholesterol_mg', 0))
+            daily_nutrition['saturated_fat'] += float(log.nutrition_data.get('saturated_fat_g', 0))
+            daily_nutrition['calories'] += float(log.nutrition_data.get('calories', log.calories or 0))
+        else:
+            daily_nutrition['calories'] += float(log.calories or 0)
+    
+    # Prepare comprehensive chart data (last 7 days)
     last_7_days = [today - timedelta(days=i) for i in range(6, -1, -1)]
-    daily_counts = [
-        {
+    
+    # Initialize chart data structures
+    calories_data = []
+    protein_data = []
+    carbs_data = []
+    fat_data = []
+    
+    # Calorie goal (you can make this dynamic per user later)
+    calorie_goal = 2000
+    
+    for day in last_7_days:
+        day_logs = FoodLog.objects.filter(date=day)
+        
+        # Calculate daily totals
+        day_calories = 0
+        day_protein = 0
+        day_carbs = 0
+        day_fat = 0
+        
+        for log in day_logs:
+            if log.nutrition_data:
+                day_protein += float(log.nutrition_data.get('protein_g', 0))
+                day_carbs += float(log.nutrition_data.get('carbohydrates_total_g', 0))
+                day_fat += float(log.nutrition_data.get('fat_total_g', 0))
+                day_calories += float(log.nutrition_data.get('calories', log.calories or 0))
+            else:
+                day_calories += float(log.calories or 0)
+        
+        # Add to chart data
+        calories_data.append({
             'date': day.strftime('%m/%d'),
-            'count': FoodLog.objects.filter(date=day).count()
-        }
-        for day in last_7_days
-    ]
-
-    meal_distribution = list(meal_type_counts)
-    daily_counts_json = json.dumps(daily_counts)
-    meal_distribution_json = json.dumps(meal_distribution)
-
+            'calories': round(day_calories, 1)
+        })
+        protein_data.append({
+            'date': day.strftime('%m/%d'),
+            'value': round(day_protein, 1)
+        })
+        carbs_data.append({
+            'date': day.strftime('%m/%d'),
+            'value': round(day_carbs, 1)
+        })
+        fat_data.append({
+            'date': day.strftime('%m/%d'),
+            'value': round(day_fat, 1)
+        })
+    
+    # Convert to JSON for JavaScript
+    calories_chart_json = json.dumps(calories_data)
+    protein_chart_json = json.dumps(protein_data)
+    carbs_chart_json = json.dumps(carbs_data)
+    fat_chart_json = json.dumps(fat_data)
+    
     context = {
-        **stats,
-        **chart_data,
+        'current_date': current_date,
+        'prev_date': prev_date.strftime('%Y-%m-%d'),
+        'next_date': next_date.strftime('%Y-%m-%d'),
+        'is_today': is_today,
         'food_logs': food_logs,
-        'total_logs': total_logs,
-        'meal_type_counts': meal_type_counts,
-        'most_frequent_meal': most_frequent_meal,
-        'avg_logs_per_day': round(avg_logs_per_day, 1),
-        'date_range_start': date_range_start,
-        'date_range_end': date_range_end,
-        'daily_counts': daily_counts,
-        'meal_distribution': meal_distribution,
-        'start_date': start_date,
-        'end_date': end_date,
-        'meal_filter': meal_filter,
-        'daily_counts_json': daily_counts_json,
-        'meal_distribution_json': meal_distribution_json,
+        'daily_meals_count': daily_meals_count,
+        'daily_nutrition': daily_nutrition,
+        'calorie_goal': calorie_goal,
+        'calories_chart_json': calories_chart_json,
+        'protein_chart_json': protein_chart_json,
+        'carbs_chart_json': carbs_chart_json,
+        'fat_chart_json': fat_chart_json,
     }
     return render(request, 'tracker/dashboard.html', context)
