@@ -240,50 +240,204 @@
     /* Table Styling */
     .table {
         color: #e2e8f0;
+        background: transparent;
     }
 
     .table thead th {
-        background: linear-gradient(135deg, rgba(26, 54, 93, 0.9) 0%, rgba(30, 58, 95, 0.95) 100%);
-        color: #e2e8f0;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.5) 0%, rgba(118, 75, 162, 0.6) 100%);
+        color: #fff;
         border: none;
         font-weight: 600;
         letter-spacing: 0.5px;
         padding: 1rem;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
     }
 
     .table tbody tr {
-        background: linear-gradient(135deg, rgba(26, 54, 93, 0.6) 0%, rgba(30, 58, 95, 0.7) 100%);
         border-bottom: 1px solid rgba(102, 126, 234, 0.15);
         transition: all 0.3s ease;
     }
 
-    .table tbody tr:hover {
-        background: linear-gradient(135deg, rgba(30, 58, 95, 0.8) 0%, rgba(44, 82, 130, 0.85) 100%);
-        transform: translateX(5px);
-        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
-    }
-
+    /* Column-specific background colors */
     .table td {
         padding: 1rem;
         border: none;
         vertical-align: middle;
+        color: #e2e8f0;
+    }
+
+    /* Food Name column - blue tint */
+    .table td:nth-child(1) {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.25) 0%, rgba(118, 75, 162, 0.3) 100%);
+        color: #a3bffa;
+    }
+
+    .table td:nth-child(1) strong {
+        color: #93c5fd;
+        font-weight: 700;
+    }
+
+    /* Meal Type column - purple tint */
+    .table td:nth-child(2) {
+        background: linear-gradient(135deg, rgba(139, 92, 246, 0.25) 0%, rgba(167, 139, 250, 0.3) 100%);
+        color: #c4b5fd;
+    }
+
+    /* Calories column - yellow/orange tint */
+    .table td:nth-child(3) {
+        background: linear-gradient(135deg, rgba(251, 191, 36, 0.25) 0%, rgba(252, 211, 77, 0.3) 100%);
+        color: #fcd34d;
+    }
+
+    /* Protein column - green tint */
+    .table td:nth-child(4) {
+        background: linear-gradient(135deg, rgba(17, 153, 142, 0.25) 0%, rgba(56, 239, 125, 0.3) 100%);
+        color: #6ee7b7;
+    }
+
+    /* Carbs column - cyan tint */
+    .table td:nth-child(5) {
+        background: linear-gradient(135deg, rgba(79, 172, 254, 0.25) 0%, rgba(0, 242, 254, 0.3) 100%);
+        color: #7dd3fc;
+    }
+
+    /* Fat column - pink tint */
+    .table td:nth-child(6) {
+        background: linear-gradient(135deg, rgba(236, 72, 153, 0.25) 0%, rgba(244, 114, 182, 0.3) 100%);
+        color: #f9a8d4;
+    }
+
+    /* Actions column - neutral */
+    .table td:nth-child(7) {
+        background: linear-gradient(135deg, rgba(26, 54, 93, 0.6) 0%, rgba(30, 58, 95, 0.65) 100%);
+    }
+
+    /* Hover effect - keep same colors, just add transform and shadow */
+    .table tbody tr:hover {
+        transform: translateX(5px);
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+    }
+
+    /* Ensure cells maintain their colors on hover - no background change */
+    .table tbody tr:hover td {
+        /* Keep original background colors - don't override */
     }
 
     /* Badge Styling */
     .badge {
-        padding: 6px 12px;
+        padding: 8px 16px;
         border-radius: 20px;
         font-weight: 600;
         letter-spacing: 0.3px;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        color: white !important;
     }
 
     .badge.bg-secondary {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
     }
 
+    /* Action buttons styling */
+    .table .btn-outline-primary,
+    .table .btn-sm.btn-outline-primary {
+        border: 2px solid rgba(102, 126, 234, 0.7);
+        color: #a3bffa;
+        background: rgba(102, 126, 234, 0.15);
+        transition: all 0.3s ease;
+    }
+
+    .table .btn-outline-primary:hover,
+    .table .btn-sm.btn-outline-primary:hover {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-color: #667eea;
+        color: white;
+        transform: translateY(-2px) scale(1.1);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.5);
+    }
+
+    .table .btn-outline-danger,
+    .table .btn-sm.btn-outline-danger {
+        border: 2px solid rgba(245, 87, 108, 0.7);
+        color: #fca5a5;
+        background: rgba(245, 87, 108, 0.15);
+        transition: all 0.3s ease;
+    }
+
+    .table .btn-outline-danger:hover,
+    .table .btn-sm.btn-outline-danger:hover {
+        background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
+        border-color: #f5576c;
+        color: white;
+        transform: translateY(-2px) scale(1.1);
+        box-shadow: 0 4px 12px rgba(245, 87, 108, 0.5);
+    }
+
     /* Text Styling */
     .text-muted {
         color: #cbd5e0 !important;
+    }
+
+    /* Dark Mode Table Styling */
+    body.dark-mode .table thead th {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.4) 0%, rgba(118, 75, 162, 0.5) 100%) !important;
+        color: #fff !important;
+        border-bottom: 1px solid rgba(102, 126, 234, 0.3);
+    }
+
+    body.dark-mode .table td {
+        color: #e2e8f0 !important;
+    }
+
+    /* Dark mode - Food Name column */
+    body.dark-mode .table td:nth-child(1) {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.25) 100%) !important;
+        color: #a3bffa !important;
+    }
+
+    body.dark-mode .table td:nth-child(1) strong {
+        color: #93c5fd !important;
+    }
+
+    /* Dark mode - Meal Type column */
+    body.dark-mode .table td:nth-child(2) {
+        background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(167, 139, 250, 0.25) 100%) !important;
+        color: #c4b5fd !important;
+    }
+
+    /* Dark mode - Calories column */
+    body.dark-mode .table td:nth-child(3) {
+        background: linear-gradient(135deg, rgba(251, 191, 36, 0.2) 0%, rgba(252, 211, 77, 0.25) 100%) !important;
+        color: #fcd34d !important;
+    }
+
+    /* Dark mode - Protein column */
+    body.dark-mode .table td:nth-child(4) {
+        background: linear-gradient(135deg, rgba(17, 153, 142, 0.2) 0%, rgba(56, 239, 125, 0.25) 100%) !important;
+        color: #6ee7b7 !important;
+    }
+
+    /* Dark mode - Carbs column */
+    body.dark-mode .table td:nth-child(5) {
+        background: linear-gradient(135deg, rgba(79, 172, 254, 0.2) 0%, rgba(0, 242, 254, 0.25) 100%) !important;
+        color: #7dd3fc !important;
+    }
+
+    /* Dark mode - Fat column */
+    body.dark-mode .table td:nth-child(6) {
+        background: linear-gradient(135deg, rgba(236, 72, 153, 0.2) 0%, rgba(244, 114, 182, 0.25) 100%) !important;
+        color: #f9a8d4 !important;
+    }
+
+    /* Dark mode - Actions column */
+    body.dark-mode .table td:nth-child(7) {
+        background: linear-gradient(135deg, rgba(45, 55, 72, 0.6) 0%, rgba(26, 32, 44, 0.65) 100%) !important;
+    }
+
+    /* Dark mode hover - same effect, no color change */
+    body.dark-mode .table tbody tr:hover {
+        transform: translateX(5px);
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
     }
 </style>
 {% endblock %}
