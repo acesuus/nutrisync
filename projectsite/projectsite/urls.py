@@ -19,5 +19,6 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('accounts/', include('allauth.urls')),  # Add this for social auth
     path('', include('tracker.urls')),  # Include tracker app URLs at root]
 ]
