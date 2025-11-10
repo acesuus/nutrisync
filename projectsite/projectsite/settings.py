@@ -39,9 +39,18 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.github',
     'tracker',  
 
 ]
+
+import os
+SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -51,6 +60,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'projectsite.urls'
@@ -160,7 +170,7 @@ SESSION_SAVE_EVERY_REQUEST = False
 
 
 
-LOGIN_URL = '/login/'
+LOGIN_URL = 'account_login'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
@@ -189,6 +199,56 @@ FOOD_TRACKER_SETTINGS = {
 # Email Configuration (for password reset, notifications, etc.)
 # For development, use console backend
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of allauth
+    'django.contrib.auth.backends.ModelBackend',
+
+    # allauth specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+# Django-allauth configuration
+ACCOUNT_LOGIN_METHODS = {"email"}  # only allow email logins
+
+ACCOUNT_SIGNUP_FIELDS = [
+    "email*",     # required email
+    "email2*",    # confirmation email (optional but recommended)
+    "password1*", # password
+    "password2*"  # password confirmation
+]
+
+# ACCOUNT_EMAIL_REQUIRED = True
+# ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_EMAIL_VERIFICATION = 'optional'  # or 'mandatory' for production
+# ACCOUNT_SIGNUP_EMAIL_ENTER_TWICE = True
+LOGIN_REDIRECT_URL = 'tracker:home'
+ACCOUNT_LOGOUT_REDIRECT_URL = 'account_login'
+
+# Social account settings
+SOCIALACCOUNT_AUTO_SIGNUP = True
+SOCIALACCOUNT_EMAIL_VERIFICATION = 'optional'
+SOCIALACCOUNT_QUERY_EMAIL = True
+
+# Social providers specific settings
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': ['profile', 'email'],
+        'AUTH_PARAMS': {'access_type': 'online'},
+        'APP': {
+            'client_id': os.getenv('GOOGLE_CLIENT_ID', ''),
+            'secret': os.getenv('GOOGLE_SECRET', ''),
+            'key': ''
+        }
+    },
+    'github': {
+        'SCOPE': ['user', 'email'],
+        'APP': {
+            'client_id': os.getenv('GITHUB_CLIENT_ID', ''),
+            'secret': os.getenv('GITHUB_SECRET', ''),
+        }
+    }
+}
 
 # For production with real email:
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
