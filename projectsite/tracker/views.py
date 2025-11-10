@@ -8,9 +8,11 @@ from .forms import FoodLogForm
 from .services import CalorieNinjasService
 from .utils import calculate_statistics, prepare_chart_data
 import json
+from django.contrib.auth.decorators import login_required
 
-
+@login_required
 def home(request):
+    """Home page - requires login"""
     """Home page showing:   
      - Form to add new food log    
      - Today's food logs"""   
@@ -68,7 +70,9 @@ def home(request):
     return render(request, 'tracker/home.html', context)
 
 
+@login_required
 def add_food_log(request):
+    """Add food log - requires login"""
     """Handle POST request to save new food log with AI parsing"""    
     if request.method == 'POST':
         form = FoodLogForm(request.POST)
@@ -136,12 +140,14 @@ def add_food_log(request):
     return redirect('tracker:home')
 
 
+@login_required
 def edit_food_log(request, pk):
+    """Edit food log - requires login"""
     """Edit an existing food log.    
     GET: Display pre-filled form    
     POST: Update the food log"""    
     # Get the food log or return 404 if not found    
-    food_log = get_object_or_404(FoodLog, pk=pk)
+    food_log = get_object_or_404(FoodLog, pk=pk, user=request.user)
     if request.method == 'POST':
         # Bind form with POST data and existing instance        
         form = FoodLogForm(request.POST, instance=food_log)
@@ -169,11 +175,13 @@ def edit_food_log(request, pk):
     return render(request, 'tracker/edit_food_log.html', context)
 
 
+@login_required
 def delete_food_log(request, pk):
+    """Delete food log - requires login"""
     """Delete a food log with confirmation.    
     GET: Show confirmation page    
     POST: Delete the food log"""    
-    food_log = get_object_or_404(FoodLog, pk=pk)
+    food_log = get_object_or_404(FoodLog, pk=pk, user=request.user)
     if request.method == 'POST':
         food_name = food_log.food_name
         food_log.delete()
@@ -188,13 +196,18 @@ def delete_food_log(request, pk):
     return render(request, 'tracker/delete_confirm.html', context)
 
 
+@login_required
 def dashboard(request):
+    """Dashboard - requires login"""
     """
     Dashboard showing daily nutrition with:
     - Day-by-day navigation
     - Daily nutrient totals
     - Charts data
     """
+    # Filter by current user
+    food_logs = FoodLog.objects.filter(user=request.user)
+    
     # Get the current date from query parameter or default to today
     date_param = request.GET.get('date')
     today = timezone.now().date()
