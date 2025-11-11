@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth.models import User
 
 class FoodLog(models.Model):
     """
@@ -13,6 +14,7 @@ class FoodLog(models.Model):
         ('snack', 'Snack'),
     ]
     
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     food_name = models.CharField(max_length=200)
     description = models.TextField(blank=True, null=True)
     calories = models.FloatField(default=0)
@@ -43,3 +45,8 @@ class FoodLog(models.Model):
         if self.nutrition_data and isinstance(self.nutrition_data, dict):
             return self.nutrition_data.get(key, default)
         return default
+    
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = "Food Log"
+        verbose_name_plural = "Food Logs"
