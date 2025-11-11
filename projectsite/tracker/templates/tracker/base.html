@@ -357,7 +357,20 @@
                             </li>
                         </ul>
                     </li>
+                    <li class="nav-item">
+                        <button 
+                            id="darkModeToggle" 
+                            class="btn btn-sm btn-outline-light ms-2 dark-mode-toggle"
+                            aria-label="Toggle dark mode"
+                        >
+                            <span class="dark-mode-icon">🌙</span>
+                        </button>
+                   
+                    </li>
                 {% else %}
+                 
+           
+
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'account_login' %}">Login</a>
                     </li>

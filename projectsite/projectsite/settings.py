@@ -50,7 +50,7 @@ INSTALLED_APPS = [
 ]
 
 import os
-SITE_ID = 1
+SITE_ID = 2
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -152,6 +152,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
+
 # Messages Framework (for form feedback)
 from django.contrib.messages import constants as messages
 
@@ -235,18 +236,11 @@ SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'SCOPE': ['profile', 'email'],
         'AUTH_PARAMS': {'access_type': 'online'},
-        'APP': {
-            'client_id': os.getenv('GOOGLE_CLIENT_ID', ''),
-            'secret': os.getenv('GOOGLE_SECRET', ''),
-            'key': ''
-        }
+  
     },
     'github': {
         'SCOPE': ['user', 'email'],
-        'APP': {
-            'client_id': os.getenv('GITHUB_CLIENT_ID', ''),
-            'secret': os.getenv('GITHUB_SECRET', ''),
-        }
+    
     }
 }
 

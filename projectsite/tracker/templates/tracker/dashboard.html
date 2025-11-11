@@ -8,14 +8,14 @@
 <style>
     /* Modern Page Styling - Semi Dark Blue Theme */
     body {
-        background: linear-gradient(135deg, #1e3a5f 0%, #2c5282 50%, #1a365d 100%);
+        background-color: #ffffff;
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        color: #e2e8f0;
+        color: #1a202c;
     }
 
     /* Dashboard Title */
     h2 {
-        color: #e2e8f0;
+        color: #1f2937;
         font-weight: 700;
         letter-spacing: 0.5px;
         text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
@@ -26,14 +26,12 @@
         border: none;
         border-radius: 20px;
         overflow: hidden;
-        backdrop-filter: blur(10px);
-        background: linear-gradient(135deg, rgba(30, 58, 95, 0.8) 0%, rgba(44, 82, 130, 0.85) 100%);
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        background: #f5f5f5;
+        box-shadow: 0 10px 28px rgba(31, 41, 55, 0.14);
         transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-        border: 2px solid rgba(102, 126, 234, 0.2);
-        background-clip: padding-box;
+        border: 1px solid rgba(17, 24, 39, 0.08);
         position: relative;
-        color: #e2e8f0;
+        color: #1f2937;
     }
 
     .card::before {
@@ -44,12 +42,7 @@
         right: 0;
         bottom: 0;
         border-radius: 20px;
-        padding: 2px;
-        background: linear-gradient(135deg, #667eea, #764ba2, #f093fb, #f5576c);
-        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-        -webkit-mask-composite: xor;
-        mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-        mask-composite: exclude;
+        border: 1px solid rgba(17, 24, 39, 0.1);
         opacity: 0;
         transition: opacity 0.4s ease;
         pointer-events: none;
@@ -62,18 +55,19 @@
 
     .card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 12px 40px rgba(102, 126, 234, 0.3);
+        box-shadow: 0 16px 36px rgba(31, 41, 55, 0.18);
     }
 
     .card-header {
         background: transparent !important;
         border: none;
-        border-bottom: 1px solid rgba(102, 126, 234, 0.2);
+        border-bottom: 1px solid rgba(55, 65, 81, 0.15);
         padding: 1.25rem 1.5rem;
         font-weight: 600;
         letter-spacing: 0.5px;
         position: relative;
         z-index: 2;
+        color: #1f2937;
     }
 
     .card-header h5 {
@@ -82,7 +76,7 @@
         display: flex;
         align-items: center;
         gap: 0.5rem;
-        color: #e2e8f0;
+        color: #1f2937;
     }
 
     .card-body {
@@ -98,36 +92,33 @@
         border: none;
         overflow: hidden;
         position: relative;
-    }
-
-    .stat-card.bg-primary {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-        box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+        background: linear-gradient(135deg, #4b5563 0%, #1f2937 100%) !important;
+        box-shadow: 0 10px 28px rgba(17, 24, 39, 0.28);
     }
 
     .stat-card.bg-success {
-        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%) !important;
-        box-shadow: 0 8px 32px rgba(17, 153, 142, 0.3);
+        background: linear-gradient(135deg, #16a34a 0%, #15803d 100%) !important;
+        box-shadow: 0 10px 28px rgba(22, 163, 74, 0.3);
     }
 
     .stat-card.bg-info {
-        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%) !important;
-        box-shadow: 0 8px 32px rgba(79, 172, 254, 0.3);
+        background: linear-gradient(135deg, #d97706 0%, #b45309 100%) !important;
+        box-shadow: 0 10px 28px rgba(217, 119, 6, 0.3);
     }
 
     .stat-card.bg-warning {
-        background: linear-gradient(135deg, #fa709a 0%, #fee140 100%) !important;
-        box-shadow: 0 8px 32px rgba(250, 112, 154, 0.3);
+        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+        box-shadow: 0 10px 28px rgba(234, 88, 12, 0.28);
     }
 
     .stat-card.bg-danger {
-        background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%) !important;
-        box-shadow: 0 8px 32px rgba(245, 87, 108, 0.3);
+        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+        box-shadow: 0 10px 28px rgba(220, 38, 38, 0.3);
     }
 
     .stat-card:hover {
         transform: translateY(-8px) scale(1.02);
-        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        box-shadow: 0 18px 42px rgba(17, 24, 39, 0.35);
     }
 
     .stat-card .display-4 {
@@ -139,67 +130,67 @@
     /* Form Styling */
     .form-label {
         font-weight: 600;
-        color: #e2e8f0;
+        color: #374151;
         margin-bottom: 0.5rem;
         font-size: 0.95rem;
         letter-spacing: 0.3px;
     }
 
     .form-control, .form-select {
-        border: 2px solid rgba(102, 126, 234, 0.3);
+        border: 2px solid rgba(55, 65, 81, 0.1);
         border-radius: 12px;
         padding: 0.75rem 1rem;
         font-size: 0.95rem;
         transition: all 0.3s ease;
-        background: linear-gradient(135deg, rgba(26, 54, 93, 0.7) 0%, rgba(30, 58, 95, 0.8) 100%);
-        color: #e2e8f0;
+        background: #ffffff;
+        color: #1f2937;
     }
 
     .form-control:focus, .form-select:focus {
-        border-color: #667eea;
-        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.25);
+        border-color: #4b5563;
+        box-shadow: 0 0 0 4px rgba(75, 85, 99, 0.25);
         transform: translateY(-2px);
-        background: linear-gradient(135deg, rgba(26, 54, 93, 0.85) 0%, rgba(30, 58, 95, 0.9) 100%);
-        color: #e2e8f0;
+        background: #ffffff;
+        color: #1f2937;
     }
 
     .form-control::placeholder {
-        color: #a0aec0;
+        color: #9ca3af;
     }
 
     /* Button Styling */
     .btn-primary {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+        background: linear-gradient(135deg, #4b5563 0%, #1f2937 100%);
         border: none;
         border-radius: 12px;
         padding: 0.85rem 1.5rem;
         font-weight: 600;
         letter-spacing: 0.5px;
         transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-        position: relative;
-        overflow: hidden;
+        box-shadow: 0 6px 18px rgba(17, 24, 39, 0.18);
+        color: #f9fafb;
     }
 
     .btn-primary:hover {
         transform: translateY(-3px) scale(1.02);
-        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
-        background: linear-gradient(135deg, #764ba2 0%, #f093fb 50%, #667eea 100%);
+        box-shadow: 0 12px 28px rgba(17, 24, 39, 0.22);
+        background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
     }
 
     .btn-secondary {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%);
         border: none;
         border-radius: 12px;
         padding: 0.85rem 1.5rem;
         font-weight: 600;
         transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+        box-shadow: 0 4px 15px rgba(75, 85, 99, 0.25);
+        color: #111827;
     }
 
     .btn-secondary:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        box-shadow: 0 8px 22px rgba(55, 65, 81, 0.28);
     }
 
     .btn-sm {
@@ -208,119 +199,72 @@
     }
 
     .btn-outline-primary {
-        border: 2px solid rgba(102, 126, 234, 0.5);
-        color: #a3bffa;
+        border: 2px solid #4b5563;
+        color: #4b5563;
         background: transparent;
         border-radius: 10px;
         transition: all 0.3s ease;
     }
 
     .btn-outline-primary:hover {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        border-color: #667eea;
-        color: white;
+        background: #1f2937;
+        border-color: #111827;
+        color: #f9fafb;
         transform: translateY(-2px);
     }
 
     .btn-outline-danger {
-        border: 2px solid rgba(245, 87, 108, 0.5);
-        color: #fca5a5;
+        border: 2px solid rgba(220, 38, 38, 0.6);
+        color: #dc2626;
         background: transparent;
         border-radius: 10px;
         transition: all 0.3s ease;
     }
 
     .btn-outline-danger:hover {
-        background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
-        border-color: #f5576c;
-        color: white;
+        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+        border-color: #b91c1c;
+        color: #fef2f2;
         transform: translateY(-2px);
     }
 
     /* Table Styling */
     .table {
-        color: #e2e8f0;
+        color: #1f2937;
         background: transparent;
     }
 
     .table thead th {
-        background: linear-gradient(135deg, rgba(102, 126, 234, 0.5) 0%, rgba(118, 75, 162, 0.6) 100%);
-        color: #fff;
+        background: #f3f4f6;
+        color: #374151;
         border: none;
         font-weight: 600;
         letter-spacing: 0.5px;
         padding: 1rem;
-        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
     }
 
     .table tbody tr {
-        border-bottom: 1px solid rgba(102, 126, 234, 0.15);
+        border-bottom: 1px solid rgba(55, 65, 81, 0.1);
         transition: all 0.3s ease;
     }
 
-    /* Column-specific background colors */
     .table td {
         padding: 1rem;
         border: none;
         vertical-align: middle;
-        color: #e2e8f0;
+        color: #1f2937;
+        background: transparent;
     }
 
-    /* Food Name column - blue tint */
-    .table td:nth-child(1) {
-        background: linear-gradient(135deg, rgba(102, 126, 234, 0.25) 0%, rgba(118, 75, 162, 0.3) 100%);
-        color: #a3bffa;
-    }
-
-    .table td:nth-child(1) strong {
-        color: #93c5fd;
+    .table td strong {
+        color: #111827;
         font-weight: 700;
     }
 
-    /* Meal Type column - purple tint */
-    .table td:nth-child(2) {
-        background: linear-gradient(135deg, rgba(139, 92, 246, 0.25) 0%, rgba(167, 139, 250, 0.3) 100%);
-        color: #c4b5fd;
-    }
-
-    /* Calories column - yellow/orange tint */
-    .table td:nth-child(3) {
-        background: linear-gradient(135deg, rgba(251, 191, 36, 0.25) 0%, rgba(252, 211, 77, 0.3) 100%);
-        color: #fcd34d;
-    }
-
-    /* Protein column - green tint */
-    .table td:nth-child(4) {
-        background: linear-gradient(135deg, rgba(17, 153, 142, 0.25) 0%, rgba(56, 239, 125, 0.3) 100%);
-        color: #6ee7b7;
-    }
-
-    /* Carbs column - cyan tint */
-    .table td:nth-child(5) {
-        background: linear-gradient(135deg, rgba(79, 172, 254, 0.25) 0%, rgba(0, 242, 254, 0.3) 100%);
-        color: #7dd3fc;
-    }
-
-    /* Fat column - pink tint */
-    .table td:nth-child(6) {
-        background: linear-gradient(135deg, rgba(236, 72, 153, 0.25) 0%, rgba(244, 114, 182, 0.3) 100%);
-        color: #f9a8d4;
-    }
-
-    /* Actions column - neutral */
-    .table td:nth-child(7) {
-        background: linear-gradient(135deg, rgba(26, 54, 93, 0.6) 0%, rgba(30, 58, 95, 0.65) 100%);
-    }
-
-    /* Hover effect - keep same colors, just add transform and shadow */
     .table tbody tr:hover {
         transform: translateX(5px);
-        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
-    }
-
-    /* Ensure cells maintain their colors on hover - no background change */
-    .table tbody tr:hover td {
-        /* Keep original background colors - don't override */
+        box-shadow: 0 4px 15px rgba(17, 24, 39, 0.12);
+        background: #f9fafb;
     }
 
     /* Badge Styling */
@@ -329,70 +273,70 @@
         border-radius: 20px;
         font-weight: 600;
         letter-spacing: 0.3px;
-        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-        color: white !important;
+        box-shadow: 0 2px 8px rgba(31, 41, 55, 0.12);
+        color: #111827 !important;
+        background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%);
     }
 
     .badge.bg-secondary {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+        background: linear-gradient(135deg, #d1d5db 0%, #9ca3af 100%) !important;
     }
 
     /* Action buttons styling */
     .table .btn-outline-primary,
     .table .btn-sm.btn-outline-primary {
-        border: 2px solid rgba(102, 126, 234, 0.7);
-        color: #a3bffa;
-        background: rgba(102, 126, 234, 0.15);
+        border: 2px solid #4b5563;
+        color: #4b5563;
+        background: rgba(75, 85, 99, 0.1);
         transition: all 0.3s ease;
     }
 
     .table .btn-outline-primary:hover,
     .table .btn-sm.btn-outline-primary:hover {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        border-color: #667eea;
-        color: white;
-        transform: translateY(-2px) scale(1.1);
-        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.5);
+        background: #1f2937;
+        border-color: #111827;
+        color: #f9fafb;
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: 0 4px 12px rgba(17, 24, 39, 0.25);
     }
 
     .table .btn-outline-danger,
     .table .btn-sm.btn-outline-danger {
-        border: 2px solid rgba(245, 87, 108, 0.7);
-        color: #fca5a5;
-        background: rgba(245, 87, 108, 0.15);
+        border: 2px solid rgba(220, 38, 38, 0.7);
+        color: #dc2626;
+        background: rgba(220, 38, 38, 0.12);
         transition: all 0.3s ease;
     }
 
     .table .btn-outline-danger:hover,
     .table .btn-sm.btn-outline-danger:hover {
-        background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
-        border-color: #f5576c;
-        color: white;
-        transform: translateY(-2px) scale(1.1);
-        box-shadow: 0 4px 12px rgba(245, 87, 108, 0.5);
+        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+        border-color: #b91c1c;
+        color: #fef2f2;
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: 0 4px 12px rgba(185, 28, 28, 0.35);
     }
 
     /* Text Styling */
     .text-muted {
-        color: #cbd5e0 !important;
+        color: #6b7280 !important;
     }
 
     /* Dark Mode Table Styling */
     body.dark-mode .table thead th {
-        background: linear-gradient(135deg, rgba(102, 126, 234, 0.4) 0%, rgba(118, 75, 162, 0.5) 100%) !important;
-        color: #fff !important;
-        border-bottom: 1px solid rgba(102, 126, 234, 0.3);
+        background: linear-gradient(135deg, rgba(75, 85, 99, 0.5) 0%, rgba(31, 41, 55, 0.6) 100%) !important;
+        color: #f9fafb !important;
+        border-bottom: 1px solid rgba(75, 85, 99, 0.3);
     }
 
     body.dark-mode .table td {
-        color: #e2e8f0 !important;
+        color: #f3f4f6 !important;
     }
 
     /* Dark mode - Food Name column */
     body.dark-mode .table td:nth-child(1) {
-        background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.25) 100%) !important;
-        color: #a3bffa !important;
+        background: linear-gradient(135deg, rgba(75, 85, 99, 0.3) 0%, rgba(31, 41, 55, 0.35) 100%) !important;
+        color: #f3f4f6 !important;
     }
 
     body.dark-mode .table td:nth-child(1) strong {
@@ -400,44 +344,20 @@
     }
 
     /* Dark mode - Meal Type column */
-    body.dark-mode .table td:nth-child(2) {
-        background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(167, 139, 250, 0.25) 100%) !important;
-        color: #c4b5fd !important;
-    }
-
-    /* Dark mode - Calories column */
-    body.dark-mode .table td:nth-child(3) {
-        background: linear-gradient(135deg, rgba(251, 191, 36, 0.2) 0%, rgba(252, 211, 77, 0.25) 100%) !important;
-        color: #fcd34d !important;
-    }
-
-    /* Dark mode - Protein column */
-    body.dark-mode .table td:nth-child(4) {
-        background: linear-gradient(135deg, rgba(17, 153, 142, 0.2) 0%, rgba(56, 239, 125, 0.25) 100%) !important;
-        color: #6ee7b7 !important;
-    }
-
-    /* Dark mode - Carbs column */
-    body.dark-mode .table td:nth-child(5) {
-        background: linear-gradient(135deg, rgba(79, 172, 254, 0.2) 0%, rgba(0, 242, 254, 0.25) 100%) !important;
-        color: #7dd3fc !important;
-    }
-
-    /* Dark mode - Fat column */
-    body.dark-mode .table td:nth-child(6) {
-        background: linear-gradient(135deg, rgba(236, 72, 153, 0.2) 0%, rgba(244, 114, 182, 0.25) 100%) !important;
-        color: #f9a8d4 !important;
-    }
-
-    /* Dark mode - Actions column */
+    body.dark-mode .table td:nth-child(2),
+    body.dark-mode .table td:nth-child(3),
+    body.dark-mode .table td:nth-child(4),
+    body.dark-mode .table td:nth-child(5),
+    body.dark-mode .table td:nth-child(6),
     body.dark-mode .table td:nth-child(7) {
-        background: linear-gradient(135deg, rgba(45, 55, 72, 0.6) 0%, rgba(26, 32, 44, 0.65) 100%) !important;
+        background: linear-gradient(135deg, rgba(55, 65, 81, 0.25) 0%, rgba(17, 24, 39, 0.3) 100%) !important;
+        color: #f3f4f6 !important;
     }
 
     /* Dark mode hover - same effect, no color change */
     body.dark-mode .table tbody tr:hover {
         transform: translateX(5px);
-        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        box-shadow: 0 4px 15px rgba(17, 24, 39, 0.3);
     }
 </style>
 {% endblock %}
@@ -455,7 +375,7 @@
                 </a>
             </div>
             <div class="col-md-4 text-center">
-                <h4 class="mb-0" style="color: #e2e8f0; font-weight: 700;">
+                <h4 class="mb-0" style="color: #1f2937; font-weight: 700;">
                     📅 {{ current_date|date:"F d, Y" }}
                 </h4>
                 <small class="text-muted">{{ current_date|date:"l" }}</small>
@@ -633,11 +553,11 @@
                                 <td><strong>{{ log.food_name }}</strong></td>
                                 <td>
                                     {% if log.meal_type == 'breakfast' %}
-                                        <span class="badge" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%) !important;">🌅 {{ log.get_meal_type_display }}</span>
+                                        <span class="badge" style="background: linear-gradient(135deg, #fcd34d 0%, #f59e0b 100%) !important;">🌅 {{ log.get_meal_type_display }}</span>
                                     {% elif log.meal_type == 'lunch' %}
-                                        <span class="badge" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%) !important;">☀️ {{ log.get_meal_type_display }}</span>
+                                        <span class="badge" style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;">☀️ {{ log.get_meal_type_display }}</span>
                                     {% elif log.meal_type == 'dinner' %}
-                                        <span class="badge" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%) !important;">🌙 {{ log.get_meal_type_display }}</span>
+                                        <span class="badge" style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%) !important;">🌙 {{ log.get_meal_type_display }}</span>
                                     {% else %}
                                         <span class="badge bg-secondary">🍎 {{ log.get_meal_type_display }}</span>
                                     {% endif %}
