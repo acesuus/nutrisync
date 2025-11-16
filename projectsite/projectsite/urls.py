@@ -16,9 +16,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic import RedirectView
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('accounts/', include('allauth.urls')),  # Add this for social auth
-    path('', include('tracker.urls')),  # Include tracker app URLs at root]
+    path('accounts/', include('allauth.urls')),
+    path('', include('tracker.urls')),
+
+
+    path('manifest.json', RedirectView.as_view(url='/static/tracker/manifest.json')),
+    path('serviceworker.js', RedirectView.as_view(url='/static/tracker/js/serviceworker.js')),
 ]
