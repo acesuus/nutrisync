@@ -1,0 +1,318 @@
+{% extends 'tracker/base.html' %}
+{% load static %}
+
+{% block title %}Settings - NutriSync{% endblock %}
+
+{% block extra_css %}
+<style>
+    .settings-header {
+        background: linear-gradient(135deg, #4b5563 0%, #1f2937 100%);
+        color: white;
+        padding: 2.5rem 0;
+        border-radius: 20px;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 30px rgba(31, 41, 55, 0.2);
+    }
+
+    .settings-card {
+        background: #f9fafb;
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 8px 24px rgba(31, 41, 55, 0.12);
+        border: 1px solid rgba(55, 65, 81, 0.08);
+        transition: all 0.3s ease;
+    }
+
+    .settings-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 28px rgba(31, 41, 55, 0.16);
+    }
+
+    .settings-section-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #1f2937;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid #e5e7eb;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .goal-input-group {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .goal-input-group .form-control {
+        flex: 1;
+    }
+
+    .goal-unit {
+        font-weight: 600;
+        color: #6b7280;
+        min-width: 40px;
+    }
+
+    .danger-zone {
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, rgba(220, 38, 38, 0.05) 100%);
+        border: 2px solid rgba(239, 68, 68, 0.2);
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .danger-zone h5 {
+        color: #dc2626;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    body.dark-mode .settings-header {
+        background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+    }
+
+    body.dark-mode .settings-card {
+        background: linear-gradient(135deg, rgba(45, 55, 72, 0.95) 0%, rgba(26, 32, 44, 0.9) 100%);
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    body.dark-mode .settings-section-title {
+        color: #e2e8f0;
+        border-bottom-color: rgba(255, 255, 255, 0.1);
+    }
+
+    body.dark-mode .goal-unit {
+        color: #cbd5e0;
+    }
+
+    body.dark-mode .danger-zone {
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.1) 100%);
+        border-color: rgba(239, 68, 68, 0.3);
+    }
+
+    body.dark-mode .danger-zone h5 {
+        color: #f87171;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Settings Header -->
+<div class="settings-header">
+    <div class="container">
+        <h2 class="mb-2">
+            <i class="bi bi-gear-fill"></i> Settings
+        </h2>
+        <p class="mb-0 text-white-50">Customize your NutriSync experience</p>
+    </div>
+</div>
+
+<!-- Account Settings -->
+<div class="settings-card">
+    <h4 class="settings-section-title">
+        <i class="bi bi-person-badge"></i> Account Settings
+    </h4>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="mb-4">
+            <label for="{{ form.email.id_for_label }}" class="form-label">
+                {{ form.email.label }}
+            </label>
+            {{ form.email }}
+            {% if form.email.errors %}
+                <div class="text-danger small mt-1">
+                    {{ form.email.errors }}
+                </div>
+            {% endif %}
+            <small class="form-text text-muted">
+                We'll never share your email with anyone else.
+            </small>
+        </div>
+        
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-circle"></i> Save Settings
+            </button>
+            <a href="{% url 'tracker:home' %}" class="btn btn-outline-secondary">
+                <i class="bi bi-x-circle"></i> Cancel
+            </a>
+        </div>
+    </form>
+</div>
+
+<!-- Nutrition Goals -->
+<div class="settings-card">
+    <h4 class="settings-section-title">
+        <i class="bi bi-bullseye"></i> Daily Nutrition Goals
+    </h4>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="{{ form.calorie_goal.id_for_label }}" class="form-label">
+                    {{ form.calorie_goal.label }}
+                </label>
+                <div class="goal-input-group">
+                    {{ form.calorie_goal }}
+                    <span class="goal-unit">kcal</span>
+                </div>
+                {% if form.calorie_goal.errors %}
+                    <div class="text-danger small mt-1">
+                        {{ form.calorie_goal.errors }}
+                    </div>
+                {% endif %}
+                <small class="form-text text-muted">
+                    {{ form.calorie_goal.help_text }}
+                </small>
+            </div>
+            
+            <div class="col-md-6 mb-3">
+                <label for="{{ form.protein_goal.id_for_label }}" class="form-label">
+                    {{ form.protein_goal.label }}
+                </label>
+                <div class="goal-input-group">
+                    {{ form.protein_goal }}
+                    <span class="goal-unit">g</span>
+                </div>
+                {% if form.protein_goal.errors %}
+                    <div class="text-danger small mt-1">
+                        {{ form.protein_goal.errors }}
+                    </div>
+                {% endif %}
+                <small class="form-text text-muted">
+                    {{ form.protein_goal.help_text }}
+                </small>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="{{ form.carbs_goal.id_for_label }}" class="form-label">
+                    {{ form.carbs_goal.label }}
+                </label>
+                <div class="goal-input-group">
+                    {{ form.carbs_goal }}
+                    <span class="goal-unit">g</span>
+                </div>
+                {% if form.carbs_goal.errors %}
+                    <div class="text-danger small mt-1">
+                        {{ form.carbs_goal.errors }}
+                    </div>
+                {% endif %}
+                <small class="form-text text-muted">
+                    {{ form.carbs_goal.help_text }}
+                </small>
+            </div>
+            
+            <div class="col-md-6 mb-3">
+                <label for="{{ form.fat_goal.id_for_label }}" class="form-label">
+                    {{ form.fat_goal.label }}
+                </label>
+                <div class="goal-input-group">
+                    {{ form.fat_goal }}
+                    <span class="goal-unit">g</span>
+                </div>
+                {% if form.fat_goal.errors %}
+                    <div class="text-danger small mt-1">
+                        {{ form.fat_goal.errors }}
+                    </div>
+                {% endif %}
+                <small class="form-text text-muted">
+                    {{ form.fat_goal.help_text }}
+                </small>
+            </div>
+        </div>
+        
+
+        
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-circle"></i> Save Goals
+            </button>
+            <button type="button" class="btn btn-outline-secondary" onclick="resetGoals()">
+                <i class="bi bi-arrow-clockwise"></i> Reset to Defaults
+            </button>
+        </div>
+    </form>
+</div>
+
+
+
+<!-- Danger Zone -->
+<div class="danger-zone">
+    <h5>
+        <i class="bi bi-exclamation-triangle"></i> Danger Zone
+    </h5>
+    <p class="text-muted mb-3">
+        Irreversible actions that affect your account and data.
+    </p>
+    
+    <div class="d-flex gap-2 flex-wrap">
+        <button type="button" class="btn btn-outline-danger" onclick="clearAllData()">
+            <i class="bi bi-trash"></i> Clear All Food Logs
+        </button>
+        <button type="button" class="btn btn-danger" onclick="deleteAccount()">
+            <i class="bi bi-person-x"></i> Delete Account
+        </button>
+    </div>
+</div>
+
+<script>
+// Reset nutrition goals to defaults
+function resetGoals() {
+    if (confirm('Are you sure you want to reset all nutrition goals to default values?')) {
+        document.getElementById('{{ form.calorie_goal.id_for_label }}').value = 2000;
+        document.getElementById('{{ form.protein_goal.id_for_label }}').value = 50;
+        document.getElementById('{{ form.carbs_goal.id_for_label }}').value = 275;
+        document.getElementById('{{ form.fat_goal.id_for_label }}').value = 78;
+        
+        // Also clear localStorage
+        localStorage.removeItem('nutritionGoals');
+        
+        alert('✅ Goals reset to defaults!');
+    }
+}
+
+// Set theme
+function setTheme(theme) {
+    if (theme === 'dark') {
+        document.body.classList.add('dark-mode');
+        document.querySelector('.dark-mode-icon').textContent = '☀️';
+        localStorage.setItem('darkMode', 'enabled');
+    } else {
+        document.body.classList.remove('dark-mode');
+        document.querySelector('.dark-mode-icon').textContent = '🌙';
+        localStorage.setItem('darkMode', 'disabled');
+    }
+    alert(`✅ Theme changed to ${theme} mode!`);
+}
+
+// Clear all food logs (would need backend implementation)
+function clearAllData() {
+    if (confirm('⚠️ WARNING: This will permanently delete ALL your food logs. This action cannot be undone. Are you absolutely sure?')) {
+        alert('❌ This feature requires backend implementation. Please contact support to delete your data.');
+        // In production, this would make an API call to delete all user data
+    }
+}
+
+// Delete account (would need backend implementation)
+function deleteAccount() {
+    const confirmation = prompt('⚠️ DANGER: This will permanently delete your account and ALL associated data. This action CANNOT be undone.\n\nType "DELETE MY ACCOUNT" to confirm:');
+    
+    if (confirmation === 'DELETE MY ACCOUNT') {
+        alert('❌ Account deletion requires backend implementation. Please contact support to delete your account.');
+        // In production, this would make an API call to delete the user account
+    } else if (confirmation) {
+        alert('❌ Confirmation text did not match. Account deletion cancelled.');
+    }
+}
+</script>
+{% endblock %}

@@ -2,7 +2,7 @@
 Django settings for projectsite project.
 UPDATED with recommended configurations for food tracker
 """
-
+import dj_database_url 
 from pathlib import Path
 import os
 from dotenv import load_dotenv
@@ -50,7 +50,7 @@ INSTALLED_APPS = [
 ]
 
 import os
-SITE_ID = 1
+SITE_ID = 2
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

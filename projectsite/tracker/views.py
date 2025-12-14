@@ -9,6 +9,7 @@ from .services import CalorieNinjasService
 from .utils import calculate_statistics, prepare_chart_data
 import json
 from django.contrib.auth.decorators import login_required
+from .forms import UserProfileForm, UserSettingsForm
 
 @login_required
 def home(request):
@@ -17,8 +18,8 @@ def home(request):
      - Form to add new food log    
      - Today's food logs"""   
     today = timezone.now().date()
-    # Get today's food logs    
-    todays_logs = FoodLog.objects.filter(date=today)
+    # Get today's food logs for current user
+    todays_logs = FoodLog.objects.filter(date=today, user=request.user)
     # Initialize empty form    
     form = FoodLogForm(initial={'date': today})
     # Count logs by meal type for today    
@@ -98,6 +99,7 @@ def add_food_log(request):
                 
                 # Create food log with API data including nutrition
                 food_log = form.save(commit=False)
+                food_log.user = request.user  # Associate with current user
                 food_log.food_name = formatted_data['food_name']
                 food_log.description = formatted_data['description']
                 food_log.calories = formatted_data['calories']
@@ -106,13 +108,13 @@ def add_food_log(request):
                 
                 messages.success(
                     request,
-                    f"{food_log.food_name} logged successfully!"
+                    f"✅ {food_log.food_name} logged successfully!"
                 )
                 return redirect('tracker:home')
             else:
                 messages.error(
                     request,
-                    f"{api_response.get('message', 'Unknown error')}"
+                    f"❌ {api_response.get('message', 'Unknown error')}"
                 )
                 return redirect('tracker:home')
         else:
@@ -120,7 +122,7 @@ def add_food_log(request):
             messages.error(request, '❌ Please correct the errors below.')
             # Re-display the form with errors            
             today = timezone.now().date()
-            todays_logs = FoodLog.objects.filter(date=today)
+            todays_logs = FoodLog.objects.filter(date=today, user=request.user)
             meal_counts = {
                 'breakfast': todays_logs.filter(meal_type='breakfast').count(),
                 'lunch': todays_logs.filter(meal_type='lunch').count(),
@@ -226,8 +228,8 @@ def dashboard(request):
     next_date = current_date + timedelta(days=1)
     is_today = current_date == today
     
-    # Get food logs for the current date
-    food_logs = FoodLog.objects.filter(date=current_date)
+    # Get food logs for the current date and user
+    food_logs = FoodLog.objects.filter(date=current_date, user=request.user)
     daily_meals_count = food_logs.count()
     
     # Calculate daily nutrition totals
@@ -272,7 +274,7 @@ def dashboard(request):
     calorie_goal = 2000
     
     for day in last_7_days:
-        day_logs = FoodLog.objects.filter(date=day)
+        day_logs = FoodLog.objects.filter(date=day, user=request.user)
         
         # Calculate daily totals
         day_calories = 0
@@ -282,15 +284,7 @@ def dashboard(request):
         
         for log in day_logs:
             if log.nutrition_data:
-                # DEBUG: Print nutrition_data keys for today's logs
-                if day == current_date:
-                    print(f"DEBUG - Food: {log.food_name}")
-                    print(f"DEBUG - nutrition_data keys: {list(log.nutrition_data.keys())}")
-                    print(f"DEBUG - nutrition_data: {log.nutrition_data}")
-                    print(f"DEBUG - carbohydrates_total_g value: {log.nutrition_data.get('carbohydrates_total_g', 'NOT FOUND')}")
-                
                 day_protein += float(log.nutrition_data.get('protein_g', 0))
-                # Try multiple possible field names for carbohydrates
                 carbs_value = (
                     log.nutrition_data.get('carbohydrates_total_g') or
                     log.nutrition_data.get('carbohydrates_g') or
@@ -342,3 +336,59 @@ def dashboard(request):
         'fat_chart_json': fat_chart_json,
     }
     return render(request, 'tracker/dashboard.html', context)
+
+
+@login_required
+def profile(request):
+    """User profile page"""
+    user = request.user
+    
+    # Calculate user statistics
+    total_logs = FoodLog.objects.filter(user=user).count()
+    
+    # Get date joined and days active
+    days_active = (timezone.now().date() - user.date_joined.date()).days
+    
+    # Most logged meal type
+    meal_type_counts = FoodLog.objects.filter(user=user).values('meal_type').annotate(
+        count=Count('id')
+    ).order_by('-count')
+    
+    most_logged_meal = meal_type_counts[0] if meal_type_counts else None
+    
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, '✅ Profile updated successfully!')
+            return redirect('tracker:profile')
+    else:
+        form = UserProfileForm(instance=user)
+    
+    context = {
+        'form': form,
+        'total_logs': total_logs,
+        'days_active': days_active,
+        'most_logged_meal': most_logged_meal,
+    }
+    return render(request, 'tracker/profile.html', context)
+
+
+@login_required
+def settings(request):
+    """User settings page"""
+    user = request.user
+    
+    if request.method == 'POST':
+        form = UserSettingsForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, '✅ Settings updated successfully!')
+            return redirect('tracker:settings')
+    else:
+        form = UserSettingsForm(instance=user)
+    
+    context = {
+        'form': form,
+    }
+    return render(request, 'tracker/settings.html', context)
