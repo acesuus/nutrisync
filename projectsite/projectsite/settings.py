@@ -31,15 +31,7 @@ ALLOWED_HOSTS = [
     "127.0.0.1",
     os.getenv("RENDER_EXTERNAL_HOSTNAME", ""),
 ]
-CSRF_TRUSTED_ORIGINS = [
-    f"https://{os.getenv('RENDER_EXTERNAL_HOSTNAME', '')}"
-]
-ACCOUNT_ADAPTER = "allauth.account.adapter.DefaultAccountAdapter"
-SOCIALACCOUNT_ADAPTER = "allauth.socialaccount.adapter.DefaultSocialAccountAdapter"
 
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_USERNAME_REQUIRED = False
-ACCOUNT_AUTHENTICATION_METHOD = "email"
 
 
 
@@ -108,7 +100,7 @@ DATABASES = {
     "default": dj_database_url.config(
         default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
         conn_max_age=600,
-        ssl_require=True,
+
     )
 }
 
@@ -259,56 +251,3 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-# For production with real email:
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = 'your-email@gmail.com'
-# EMAIL_HOST_PASSWORD = 'your-app-password'
-
-
-# Security Settings (for production)
-# Uncomment these when deploying:
-# SECURE_SSL_REDIRECT = True
-# SESSION_COOKIE_SECURE = True
-# CSRF_COOKIE_SECURE = True
-# SECURE_BROWSER_XSS_FILTER = True
-# SECURE_CONTENT_TYPE_NOSNIFF = True
-# X_FRAME_OPTIONS = 'DENY'
-
-
-
-
-if not DEBUG:
-    try:
-        from django.contrib.sites.models import Site
-
-        domain = os.getenv(
-            "RENDER_EXTERNAL_HOSTNAME",
-            "localhost"
-        )
-
-        Site.objects.update_or_create(
-            id=SITE_ID,
-            defaults={
-                "domain": domain,
-                "name": domain,
-            },
-        )
-    except Exception:
-        pass
-
-if not DEBUG:
-    try:
-        from django.contrib.auth import get_user_model
-        User = get_user_model()
-
-        if not User.objects.filter(username="admin").exists():
-            User.objects.create_superuser(
-                username="kert",
-                email="",
-                password="admin123"
-            )
-    except Exception:
-        pass
