@@ -26,8 +26,21 @@ CALORIENINJAS_API_KEY = os.getenv('CALORIENINJAS_API_KEY')
 
 
 
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    os.getenv("RENDER_EXTERNAL_HOSTNAME", ""),
+]
+CSRF_TRUSTED_ORIGINS = [
+    f"https://{os.getenv('RENDER_EXTERNAL_HOSTNAME', '')}"
+]
+ACCOUNT_ADAPTER = "allauth.account.adapter.DefaultAccountAdapter"
+SOCIALACCOUNT_ADAPTER = "allauth.socialaccount.adapter.DefaultSocialAccountAdapter"
 
-ALLOWED_HOSTS = ["*"] 
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = "email"
+
 
 
 # Application definition
@@ -93,7 +106,9 @@ WSGI_APPLICATION = 'projectsite.wsgi.application'
 
 DATABASES = {
     "default": dj_database_url.config(
-        default="sqlite:///db.sqlite3"
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+        conn_max_age=600,
+        ssl_require=not DEBUG,
     )
 }
 
@@ -261,3 +276,39 @@ SOCIALACCOUNT_PROVIDERS = {
 # SECURE_BROWSER_XSS_FILTER = True
 # SECURE_CONTENT_TYPE_NOSNIFF = True
 # X_FRAME_OPTIONS = 'DENY'
+
+
+
+
+if not DEBUG:
+    try:
+        from django.contrib.sites.models import Site
+
+        domain = os.getenv(
+            "RENDER_EXTERNAL_HOSTNAME",
+            "localhost"
+        )
+
+        Site.objects.update_or_create(
+            id=SITE_ID,
+            defaults={
+                "domain": domain,
+                "name": domain,
+            },
+        )
+    except Exception:
+        pass
+
+if not DEBUG:
+    try:
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+
+        if not User.objects.filter(username="admin").exists():
+            User.objects.create_superuser(
+                username="kert",
+                email="",
+                password="admin123"
+            )
+    except Exception:
+        pass
