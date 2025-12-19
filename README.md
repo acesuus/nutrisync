@@ -109,21 +109,6 @@ Tracks individual food consumption entries.
 - Cholesterol (mg)
 - Saturated Fat (g)
 
-## 🌐 API Routes
-
-### Authentication
-- `accounts/login/` - User login
-- `accounts/logout/` - User logout
-- `accounts/signup/` - User registration
-
-### Tracker App
-- `/` - Home page (food log form & today's logs)
-- `/dashboard/` - Analytics dashboard
-- `/add/` - Add new food log
-- `/edit/<id>/` - Edit existing food log
-- `/delete/<id>/` - Delete food log
-- `/profile/` - User profile management
-- `/settings/` - User settings
 
 ## 🔧 Core Features Explanation
 
